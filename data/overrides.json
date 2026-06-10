@@ -1,0 +1,12 @@
+{
+  "note": "Manual corrections that always win over the API. Same shape as results.json. The admin page writes here; you can also hand-edit. Group: 'GS-05': [home, away]. Knockout: list team CODES per round; WINNER is one code.",
+  "groupStage": {},
+  "knockout": {
+    "R32": [],
+    "R16": [],
+    "QF": [],
+    "SF": [],
+    "F": [],
+    "WINNER": null
+  }
+}

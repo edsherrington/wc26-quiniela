@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>WC26 Quiniela — Today's Fixtures</title>
+  <meta name="theme-color" content="#0b1f2a" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%BD%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-brand">
+      <div class="wrap">
+        <div class="brand">
+          <span>WC26 Family Quiniela</span>
+          <span class="sub">World Cup 2026</span>
+        </div>
+      </div>
+    </div>
+    <div class="topbar-image"></div>
+    <div class="topbar-nav">
+      <div class="wrap">
+        <nav class="nav">
+          <a href="index.html" class="active">Fixtures</a>
+          <a href="leaderboard.html">Leaderboard</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="datenav">
+      <button id="prevDay" aria-label="Previous day">‹</button>
+      <div class="date" id="dateLabel">—</div>
+      <button id="nextDay" aria-label="Next day">›</button>
+    </div>
+    <button class="today-jump" id="todayJump">Jump to today</button>
+
+    <div class="legend">
+      <span><i style="background:#00b074"></i> Exact (4)</span>
+      <span><i style="background:#5bb8ff"></i> Result + GD (2)</span>
+      <span><i style="background:#b9c4cb"></i> Result (1)</span>
+      <span><i style="background:#eef2f4"></i> Miss (0)</span>
+    </div>
+
+    <div id="matches"></div>
+  </main>
+
+  <script src="js/teams.js"></script>
+  <script src="js/scoring.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/index.js"></script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "lastUpdated": null,
+  "note": "Actual results. Group stage: 'GS-01': [homeGoals, awayGoals] once a match is final. Knockout: list the team CODES that actually reached each round; WINNER is a single code. Filled by the score fetcher or by hand.",
+  "groupStage": {},
+  "knockout": {
+    "R32": [],
+    "R16": [],
+    "QF": [],
+    "SF": [],
+    "F": [],
+    "WINNER": null
+  }
+}

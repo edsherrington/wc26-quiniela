@@ -1,0 +1,1057 @@
+{
+  "competition": "FIFA World Cup 2026",
+  "groupPoints": {
+    "exact": 4,
+    "result_gd": 2,
+    "result": 1,
+    "wrong": 0
+  },
+  "knockoutRounds": [
+    {
+      "id": "R32",
+      "label": "Round of 32",
+      "points": 2,
+      "prefix": "R32-"
+    },
+    {
+      "id": "R16",
+      "label": "Round of 16",
+      "points": 4,
+      "prefix": "R16-"
+    },
+    {
+      "id": "QF",
+      "label": "Quarter-final",
+      "points": 6,
+      "prefix": "QF-"
+    },
+    {
+      "id": "SF",
+      "label": "Semi-final",
+      "points": 9,
+      "prefix": "SF-"
+    },
+    {
+      "id": "F",
+      "label": "Finalist",
+      "points": 14,
+      "prefix": "F-"
+    },
+    {
+      "id": "WINNER",
+      "label": "Champion",
+      "points": 25,
+      "prefix": "WINNER"
+    }
+  ],
+  "groupStage": [
+    {
+      "id": "GS-01",
+      "group": "A",
+      "kickoff": "2026-06-11T13:00:00",
+      "venue": "Mexico City",
+      "home": {
+        "name": "Mexico",
+        "code": "MEX"
+      },
+      "away": {
+        "name": "South Africa",
+        "code": "RSA"
+      }
+    },
+    {
+      "id": "GS-02",
+      "group": "A",
+      "kickoff": "2026-06-11T20:00:00",
+      "venue": "Guadalajara",
+      "home": {
+        "name": "Korea Republic",
+        "code": "KOR"
+      },
+      "away": {
+        "name": "Czechia",
+        "code": "CZE"
+      }
+    },
+    {
+      "id": "GS-03",
+      "group": "A",
+      "kickoff": "2026-06-18T19:00:00",
+      "venue": "Guadalajara",
+      "home": {
+        "name": "Mexico",
+        "code": "MEX"
+      },
+      "away": {
+        "name": "Korea Republic",
+        "code": "KOR"
+      }
+    },
+    {
+      "id": "GS-04",
+      "group": "A",
+      "kickoff": "2026-06-18T10:00:00",
+      "venue": "Atlanta",
+      "home": {
+        "name": "Czechia",
+        "code": "CZE"
+      },
+      "away": {
+        "name": "South Africa",
+        "code": "RSA"
+      }
+    },
+    {
+      "id": "GS-05",
+      "group": "A",
+      "kickoff": "2026-06-24T19:00:00",
+      "venue": "Mexico City",
+      "home": {
+        "name": "Czechia",
+        "code": "CZE"
+      },
+      "away": {
+        "name": "Mexico",
+        "code": "MEX"
+      }
+    },
+    {
+      "id": "GS-06",
+      "group": "A",
+      "kickoff": "2026-06-24T19:00:00",
+      "venue": "Monterrey",
+      "home": {
+        "name": "South Africa",
+        "code": "RSA"
+      },
+      "away": {
+        "name": "Korea Republic",
+        "code": "KOR"
+      }
+    },
+    {
+      "id": "GS-07",
+      "group": "B",
+      "kickoff": "2026-06-12T13:00:00",
+      "venue": "Toronto",
+      "home": {
+        "name": "Canada",
+        "code": "CAN"
+      },
+      "away": {
+        "name": "Bosnia and Herzegovina",
+        "code": "BIH"
+      }
+    },
+    {
+      "id": "GS-08",
+      "group": "B",
+      "kickoff": "2026-06-13T13:00:00",
+      "venue": "San Francisco",
+      "home": {
+        "name": "Qatar",
+        "code": "QAT"
+      },
+      "away": {
+        "name": "Switzerland",
+        "code": "SUI"
+      }
+    },
+    {
+      "id": "GS-09",
+      "group": "B",
+      "kickoff": "2026-06-18T16:00:00",
+      "venue": "Vancouver",
+      "home": {
+        "name": "Canada",
+        "code": "CAN"
+      },
+      "away": {
+        "name": "Qatar",
+        "code": "QAT"
+      }
+    },
+    {
+      "id": "GS-10",
+      "group": "B",
+      "kickoff": "2026-06-18T13:00:00",
+      "venue": "Los Angeles",
+      "home": {
+        "name": "Switzerland",
+        "code": "SUI"
+      },
+      "away": {
+        "name": "Bosnia and Herzegovina",
+        "code": "BIH"
+      }
+    },
+    {
+      "id": "GS-11",
+      "group": "B",
+      "kickoff": "2026-06-24T13:00:00",
+      "venue": "Vancouver",
+      "home": {
+        "name": "Switzerland",
+        "code": "SUI"
+      },
+      "away": {
+        "name": "Canada",
+        "code": "CAN"
+      }
+    },
+    {
+      "id": "GS-12",
+      "group": "B",
+      "kickoff": "2026-06-24T13:00:00",
+      "venue": "Seattle",
+      "home": {
+        "name": "Bosnia and Herzegovina",
+        "code": "BIH"
+      },
+      "away": {
+        "name": "Qatar",
+        "code": "QAT"
+      }
+    },
+    {
+      "id": "GS-13",
+      "group": "C",
+      "kickoff": "2026-06-13T16:00:00",
+      "venue": "New Jersey",
+      "home": {
+        "name": "Brazil",
+        "code": "BRA"
+      },
+      "away": {
+        "name": "Morocco",
+        "code": "MAR"
+      }
+    },
+    {
+      "id": "GS-14",
+      "group": "C",
+      "kickoff": "2026-06-13T19:00:00",
+      "venue": "Boston",
+      "home": {
+        "name": "Haiti",
+        "code": "HAI"
+      },
+      "away": {
+        "name": "Scotland",
+        "code": "SCO"
+      }
+    },
+    {
+      "id": "GS-15",
+      "group": "C",
+      "kickoff": "2026-06-19T18:30:00",
+      "venue": "Philadelphia",
+      "home": {
+        "name": "Brazil",
+        "code": "BRA"
+      },
+      "away": {
+        "name": "Haiti",
+        "code": "HAI"
+      }
+    },
+    {
+      "id": "GS-16",
+      "group": "C",
+      "kickoff": "2026-06-19T16:00:00",
+      "venue": "Boston",
+      "home": {
+        "name": "Scotland",
+        "code": "SCO"
+      },
+      "away": {
+        "name": "Morocco",
+        "code": "MAR"
+      }
+    },
+    {
+      "id": "GS-17",
+      "group": "C",
+      "kickoff": "2026-06-24T16:00:00",
+      "venue": "Miami",
+      "home": {
+        "name": "Scotland",
+        "code": "SCO"
+      },
+      "away": {
+        "name": "Brazil",
+        "code": "BRA"
+      }
+    },
+    {
+      "id": "GS-18",
+      "group": "C",
+      "kickoff": "2026-06-24T16:00:00",
+      "venue": "Atlanta",
+      "home": {
+        "name": "Morocco",
+        "code": "MAR"
+      },
+      "away": {
+        "name": "Haiti",
+        "code": "HAI"
+      }
+    },
+    {
+      "id": "GS-19",
+      "group": "D",
+      "kickoff": "2026-06-12T19:00:00",
+      "venue": "Los Angeles",
+      "home": {
+        "name": "USA",
+        "code": "USA"
+      },
+      "away": {
+        "name": "Paraguay",
+        "code": "PAR"
+      }
+    },
+    {
+      "id": "GS-20",
+      "group": "D",
+      "kickoff": "2026-06-13T22:00:00",
+      "venue": "Vancouver",
+      "home": {
+        "name": "Australia",
+        "code": "AUS"
+      },
+      "away": {
+        "name": "Türkiye",
+        "code": "TUR"
+      }
+    },
+    {
+      "id": "GS-21",
+      "group": "D",
+      "kickoff": "2026-06-19T13:00:00",
+      "venue": "Seattle",
+      "home": {
+        "name": "USA",
+        "code": "USA"
+      },
+      "away": {
+        "name": "Australia",
+        "code": "AUS"
+      }
+    },
+    {
+      "id": "GS-22",
+      "group": "D",
+      "kickoff": "2026-06-19T21:00:00",
+      "venue": "San Francisco",
+      "home": {
+        "name": "Türkiye",
+        "code": "TUR"
+      },
+      "away": {
+        "name": "Paraguay",
+        "code": "PAR"
+      }
+    },
+    {
+      "id": "GS-23",
+      "group": "D",
+      "kickoff": "2026-06-25T20:00:00",
+      "venue": "Los Angeles",
+      "home": {
+        "name": "Türkiye",
+        "code": "TUR"
+      },
+      "away": {
+        "name": "USA",
+        "code": "USA"
+      }
+    },
+    {
+      "id": "GS-24",
+      "group": "D",
+      "kickoff": "2026-06-25T20:00:00",
+      "venue": "San Francisco",
+      "home": {
+        "name": "Paraguay",
+        "code": "PAR"
+      },
+      "away": {
+        "name": "Australia",
+        "code": "AUS"
+      }
+    },
+    {
+      "id": "GS-25",
+      "group": "E",
+      "kickoff": "2026-06-14T11:00:00",
+      "venue": "Houston",
+      "home": {
+        "name": "Germany",
+        "code": "GER"
+      },
+      "away": {
+        "name": "Curaçao",
+        "code": "CUW"
+      }
+    },
+    {
+      "id": "GS-26",
+      "group": "E",
+      "kickoff": "2026-06-14T19:00:00",
+      "venue": "Philadelphia",
+      "home": {
+        "name": "Côte d'Ivoire",
+        "code": "CIV"
+      },
+      "away": {
+        "name": "Ecuador",
+        "code": "ECU"
+      }
+    },
+    {
+      "id": "GS-27",
+      "group": "E",
+      "kickoff": "2026-06-20T14:00:00",
+      "venue": "Toronto",
+      "home": {
+        "name": "Germany",
+        "code": "GER"
+      },
+      "away": {
+        "name": "Côte d'Ivoire",
+        "code": "CIV"
+      }
+    },
+    {
+      "id": "GS-28",
+      "group": "E",
+      "kickoff": "2026-06-20T18:00:00",
+      "venue": "Kansas City",
+      "home": {
+        "name": "Ecuador",
+        "code": "ECU"
+      },
+      "away": {
+        "name": "Curaçao",
+        "code": "CUW"
+      }
+    },
+    {
+      "id": "GS-29",
+      "group": "E",
+      "kickoff": "2026-06-25T14:00:00",
+      "venue": "New Jersey",
+      "home": {
+        "name": "Ecuador",
+        "code": "ECU"
+      },
+      "away": {
+        "name": "Germany",
+        "code": "GER"
+      }
+    },
+    {
+      "id": "GS-30",
+      "group": "E",
+      "kickoff": "2026-06-25T14:00:00",
+      "venue": "Philadelphia",
+      "home": {
+        "name": "Curaçao",
+        "code": "CUW"
+      },
+      "away": {
+        "name": "Côte d'Ivoire",
+        "code": "CIV"
+      }
+    },
+    {
+      "id": "GS-31",
+      "group": "F",
+      "kickoff": "2026-06-14T14:00:00",
+      "venue": "Dallas",
+      "home": {
+        "name": "Netherlands",
+        "code": "NED"
+      },
+      "away": {
+        "name": "Japan",
+        "code": "JPN"
+      }
+    },
+    {
+      "id": "GS-32",
+      "group": "F",
+      "kickoff": "2026-06-14T20:00:00",
+      "venue": "Monterrey",
+      "home": {
+        "name": "Sweden",
+        "code": "SWE"
+      },
+      "away": {
+        "name": "Tunisia",
+        "code": "TUN"
+      }
+    },
+    {
+      "id": "GS-33",
+      "group": "F",
+      "kickoff": "2026-06-20T11:00:00",
+      "venue": "Houston",
+      "home": {
+        "name": "Netherlands",
+        "code": "NED"
+      },
+      "away": {
+        "name": "Sweden",
+        "code": "SWE"
+      }
+    },
+    {
+      "id": "GS-34",
+      "group": "F",
+      "kickoff": "2026-06-20T22:00:00",
+      "venue": "Monterrey",
+      "home": {
+        "name": "Tunisia",
+        "code": "TUN"
+      },
+      "away": {
+        "name": "Japan",
+        "code": "JPN"
+      }
+    },
+    {
+      "id": "GS-35",
+      "group": "F",
+      "kickoff": "2026-06-25T17:00:00",
+      "venue": "Kansas City",
+      "home": {
+        "name": "Tunisia",
+        "code": "TUN"
+      },
+      "away": {
+        "name": "Netherlands",
+        "code": "NED"
+      }
+    },
+    {
+      "id": "GS-36",
+      "group": "F",
+      "kickoff": "2026-06-25T17:00:00",
+      "venue": "Dallas",
+      "home": {
+        "name": "Japan",
+        "code": "JPN"
+      },
+      "away": {
+        "name": "Sweden",
+        "code": "SWE"
+      }
+    },
+    {
+      "id": "GS-37",
+      "group": "G",
+      "kickoff": "2026-06-15T13:00:00",
+      "venue": "Seattle",
+      "home": {
+        "name": "Belgium",
+        "code": "BEL"
+      },
+      "away": {
+        "name": "Egypt",
+        "code": "EGY"
+      }
+    },
+    {
+      "id": "GS-38",
+      "group": "G",
+      "kickoff": "2026-06-15T19:00:00",
+      "venue": "Los Angeles",
+      "home": {
+        "name": "Iran",
+        "code": "IRN"
+      },
+      "away": {
+        "name": "New Zealand",
+        "code": "NZL"
+      }
+    },
+    {
+      "id": "GS-39",
+      "group": "G",
+      "kickoff": "2026-06-21T13:00:00",
+      "venue": "Los Angeles",
+      "home": {
+        "name": "Belgium",
+        "code": "BEL"
+      },
+      "away": {
+        "name": "Iran",
+        "code": "IRN"
+      }
+    },
+    {
+      "id": "GS-40",
+      "group": "G",
+      "kickoff": "2026-06-21T19:00:00",
+      "venue": "Vancouver",
+      "home": {
+        "name": "New Zealand",
+        "code": "NZL"
+      },
+      "away": {
+        "name": "Egypt",
+        "code": "EGY"
+      }
+    },
+    {
+      "id": "GS-41",
+      "group": "G",
+      "kickoff": "2026-06-26T21:00:00",
+      "venue": "Vancouver",
+      "home": {
+        "name": "New Zealand",
+        "code": "NZL"
+      },
+      "away": {
+        "name": "Belgium",
+        "code": "BEL"
+      }
+    },
+    {
+      "id": "GS-42",
+      "group": "G",
+      "kickoff": "2026-06-26T21:00:00",
+      "venue": "Seattle",
+      "home": {
+        "name": "Egypt",
+        "code": "EGY"
+      },
+      "away": {
+        "name": "Iran",
+        "code": "IRN"
+      }
+    },
+    {
+      "id": "GS-43",
+      "group": "H",
+      "kickoff": "2026-06-15T10:00:00",
+      "venue": "Atlanta",
+      "home": {
+        "name": "Spain",
+        "code": "ESP"
+      },
+      "away": {
+        "name": "Cape Verde",
+        "code": "CPV"
+      }
+    },
+    {
+      "id": "GS-44",
+      "group": "H",
+      "kickoff": "2026-06-15T16:00:00",
+      "venue": "Miami",
+      "home": {
+        "name": "Saudi Arabia",
+        "code": "KSA"
+      },
+      "away": {
+        "name": "Uruguay",
+        "code": "URU"
+      }
+    },
+    {
+      "id": "GS-45",
+      "group": "H",
+      "kickoff": "2026-06-21T10:00:00",
+      "venue": "Atlanta",
+      "home": {
+        "name": "Spain",
+        "code": "ESP"
+      },
+      "away": {
+        "name": "Saudi Arabia",
+        "code": "KSA"
+      }
+    },
+    {
+      "id": "GS-46",
+      "group": "H",
+      "kickoff": "2026-06-21T16:00:00",
+      "venue": "Miami",
+      "home": {
+        "name": "Uruguay",
+        "code": "URU"
+      },
+      "away": {
+        "name": "Cape Verde",
+        "code": "CPV"
+      }
+    },
+    {
+      "id": "GS-47",
+      "group": "H",
+      "kickoff": "2026-06-26T18:00:00",
+      "venue": "Guadalajara",
+      "home": {
+        "name": "Uruguay",
+        "code": "URU"
+      },
+      "away": {
+        "name": "Spain",
+        "code": "ESP"
+      }
+    },
+    {
+      "id": "GS-48",
+      "group": "H",
+      "kickoff": "2026-06-26T18:00:00",
+      "venue": "Houston",
+      "home": {
+        "name": "Cape Verde",
+        "code": "CPV"
+      },
+      "away": {
+        "name": "Saudi Arabia",
+        "code": "KSA"
+      }
+    },
+    {
+      "id": "GS-49",
+      "group": "I",
+      "kickoff": "2026-06-16T13:00:00",
+      "venue": "New Jersey",
+      "home": {
+        "name": "France",
+        "code": "FRA"
+      },
+      "away": {
+        "name": "Senegal",
+        "code": "SEN"
+      }
+    },
+    {
+      "id": "GS-50",
+      "group": "I",
+      "kickoff": "2026-06-16T16:00:00",
+      "venue": "Boston",
+      "home": {
+        "name": "Iraq",
+        "code": "IRQ"
+      },
+      "away": {
+        "name": "Norway",
+        "code": "NOR"
+      }
+    },
+    {
+      "id": "GS-51",
+      "group": "I",
+      "kickoff": "2026-06-22T15:00:00",
+      "venue": "Philadelphia",
+      "home": {
+        "name": "France",
+        "code": "FRA"
+      },
+      "away": {
+        "name": "Iraq",
+        "code": "IRQ"
+      }
+    },
+    {
+      "id": "GS-52",
+      "group": "I",
+      "kickoff": "2026-06-22T18:00:00",
+      "venue": "New Jersey",
+      "home": {
+        "name": "Norway",
+        "code": "NOR"
+      },
+      "away": {
+        "name": "Senegal",
+        "code": "SEN"
+      }
+    },
+    {
+      "id": "GS-53",
+      "group": "I",
+      "kickoff": "2026-06-26T13:00:00",
+      "venue": "Boston",
+      "home": {
+        "name": "Norway",
+        "code": "NOR"
+      },
+      "away": {
+        "name": "France",
+        "code": "FRA"
+      }
+    },
+    {
+      "id": "GS-54",
+      "group": "I",
+      "kickoff": "2026-06-26T13:00:00",
+      "venue": "Toronto",
+      "home": {
+        "name": "Senegal",
+        "code": "SEN"
+      },
+      "away": {
+        "name": "Iraq",
+        "code": "IRQ"
+      }
+    },
+    {
+      "id": "GS-55",
+      "group": "J",
+      "kickoff": "2026-06-16T19:00:00",
+      "venue": "Kansas City",
+      "home": {
+        "name": "Argentina",
+        "code": "ARG"
+      },
+      "away": {
+        "name": "Algeria",
+        "code": "ALG"
+      }
+    },
+    {
+      "id": "GS-56",
+      "group": "J",
+      "kickoff": "2026-06-16T22:00:00",
+      "venue": "San Francisco",
+      "home": {
+        "name": "Austria",
+        "code": "AUT"
+      },
+      "away": {
+        "name": "Jordan",
+        "code": "JOR"
+      }
+    },
+    {
+      "id": "GS-57",
+      "group": "J",
+      "kickoff": "2026-06-22T11:00:00",
+      "venue": "Dallas",
+      "home": {
+        "name": "Argentina",
+        "code": "ARG"
+      },
+      "away": {
+        "name": "Austria",
+        "code": "AUT"
+      }
+    },
+    {
+      "id": "GS-58",
+      "group": "J",
+      "kickoff": "2026-06-22T21:00:00",
+      "venue": "San Francisco",
+      "home": {
+        "name": "Jordan",
+        "code": "JOR"
+      },
+      "away": {
+        "name": "Algeria",
+        "code": "ALG"
+      }
+    },
+    {
+      "id": "GS-59",
+      "group": "J",
+      "kickoff": "2026-06-27T20:00:00",
+      "venue": "Dallas",
+      "home": {
+        "name": "Jordan",
+        "code": "JOR"
+      },
+      "away": {
+        "name": "Argentina",
+        "code": "ARG"
+      }
+    },
+    {
+      "id": "GS-60",
+      "group": "J",
+      "kickoff": "2026-06-27T20:00:00",
+      "venue": "Kansas City",
+      "home": {
+        "name": "Algeria",
+        "code": "ALG"
+      },
+      "away": {
+        "name": "Austria",
+        "code": "AUT"
+      }
+    },
+    {
+      "id": "GS-61",
+      "group": "K",
+      "kickoff": "2026-06-17T11:00:00",
+      "venue": "Houston",
+      "home": {
+        "name": "Portugal",
+        "code": "POR"
+      },
+      "away": {
+        "name": "DR Congo",
+        "code": "COD"
+      }
+    },
+    {
+      "id": "GS-62",
+      "group": "K",
+      "kickoff": "2026-06-17T20:00:00",
+      "venue": "Mexico City",
+      "home": {
+        "name": "Uzbekistan",
+        "code": "UZB"
+      },
+      "away": {
+        "name": "Colombia",
+        "code": "COL"
+      }
+    },
+    {
+      "id": "GS-63",
+      "group": "K",
+      "kickoff": "2026-06-23T11:00:00",
+      "venue": "Houston",
+      "home": {
+        "name": "Portugal",
+        "code": "POR"
+      },
+      "away": {
+        "name": "Uzbekistan",
+        "code": "UZB"
+      }
+    },
+    {
+      "id": "GS-64",
+      "group": "K",
+      "kickoff": "2026-06-23T20:00:00",
+      "venue": "Guadalajara",
+      "home": {
+        "name": "Colombia",
+        "code": "COL"
+      },
+      "away": {
+        "name": "DR Congo",
+        "code": "COD"
+      }
+    },
+    {
+      "id": "GS-65",
+      "group": "K",
+      "kickoff": "2026-06-27T17:30:00",
+      "venue": "Miami",
+      "home": {
+        "name": "Colombia",
+        "code": "COL"
+      },
+      "away": {
+        "name": "Portugal",
+        "code": "POR"
+      }
+    },
+    {
+      "id": "GS-66",
+      "group": "K",
+      "kickoff": "2026-06-27T17:30:00",
+      "venue": "Atlanta",
+      "home": {
+        "name": "DR Congo",
+        "code": "COD"
+      },
+      "away": {
+        "name": "Uzbekistan",
+        "code": "UZB"
+      }
+    },
+    {
+      "id": "GS-67",
+      "group": "L",
+      "kickoff": "2026-06-17T14:00:00",
+      "venue": "Dallas",
+      "home": {
+        "name": "England",
+        "code": "ENG"
+      },
+      "away": {
+        "name": "Croatia",
+        "code": "CRO"
+      }
+    },
+    {
+      "id": "GS-68",
+      "group": "L",
+      "kickoff": "2026-06-17T17:00:00",
+      "venue": "Toronto",
+      "home": {
+        "name": "Ghana",
+        "code": "GHA"
+      },
+      "away": {
+        "name": "Panama",
+        "code": "PAN"
+      }
+    },
+    {
+      "id": "GS-69",
+      "group": "L",
+      "kickoff": "2026-06-23T14:00:00",
+      "venue": "Boston",
+      "home": {
+        "name": "England",
+        "code": "ENG"
+      },
+      "away": {
+        "name": "Ghana",
+        "code": "GHA"
+      }
+    },
+    {
+      "id": "GS-70",
+      "group": "L",
+      "kickoff": "2026-06-23T17:00:00",
+      "venue": "Toronto",
+      "home": {
+        "name": "Panama",
+        "code": "PAN"
+      },
+      "away": {
+        "name": "Croatia",
+        "code": "CRO"
+      }
+    },
+    {
+      "id": "GS-71",
+      "group": "L",
+      "kickoff": "2026-06-27T15:00:00",
+      "venue": "New Jersey",
+      "home": {
+        "name": "Panama",
+        "code": "PAN"
+      },
+      "away": {
+        "name": "England",
+        "code": "ENG"
+      }
+    },
+    {
+      "id": "GS-72",
+      "group": "L",
+      "kickoff": "2026-06-27T15:00:00",
+      "venue": "Philadelphia",
+      "home": {
+        "name": "Croatia",
+        "code": "CRO"
+      },
+      "away": {
+        "name": "Ghana",
+        "code": "GHA"
+      }
+    }
+  ]
+}

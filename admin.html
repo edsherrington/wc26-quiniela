@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>WC26 Quiniela — Admin</title>
+  <meta name="theme-color" content="#0b1f2a" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%BD%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/admin.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap">
+      <div class="brand">
+        <span class="ball">🔧</span>
+        <span>WC26 Admin</span>
+        <span class="sub">Enter & correct results</span>
+      </div>
+      <nav class="nav">
+        <a href="index.html">Fixtures</a>
+        <a href="leaderboard.html">Leaderboard</a>
+        <a href="admin.html" class="active">Admin</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="admin-tabs">
+      <button id="tabGroup" class="active">Group stage</button>
+      <button id="tabKo">Knockout</button>
+    </div>
+
+    <section id="groupPane">
+      <div class="datenav">
+        <button id="prevDay" aria-label="Previous day">‹</button>
+        <div class="date" id="dateLabel">—</div>
+        <button id="nextDay" aria-label="Next day">›</button>
+      </div>
+      <p class="admin-hint">Type the final score for each match. Leave blank to keep the API value / no result. Your entries here always win over the API.</p>
+      <div id="groupEditor"></div>
+    </section>
+
+    <section id="koPane" hidden>
+      <p class="admin-hint">For each round, list the FIFA codes of the teams that reached it, separated by spaces or commas. Champion is one code. Normally the API fills this in — only use it to fix mistakes.</p>
+      <div id="koEditor"></div>
+      <details class="codes-help">
+        <summary>Show all team codes</summary>
+        <div id="codeList"></div>
+      </details>
+    </section>
+
+    <div class="savebar">
+      <span id="saveStatus"></span>
+      <button id="saveBtn">Save results</button>
+    </div>
+  </main>
+
+  <script src="js/teams.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

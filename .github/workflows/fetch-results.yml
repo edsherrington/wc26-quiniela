@@ -1,0 +1,41 @@
+# Auto-fetch World Cup results and commit them so the deployed site updates.
+#
+# Setup (when you deploy):
+#   1. Put this repo on GitHub.
+#   2. Repo Settings -> Secrets and variables -> Actions -> New secret:
+#        Name:  API_FOOTBALL_KEY     Value: <your free api-football.com key>
+#   3. Settings -> Actions -> General -> Workflow permissions -> "Read and write".
+#
+# The cron runs every 10 min — points land within minutes of full time.
+# That cadence is free on a PUBLIC repo (unlimited Action minutes). If you keep the repo
+# PRIVATE, change "*/10" to "*/30" below to stay inside the free 2,000 minutes/month.
+name: Fetch WC26 results
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch: {}   # lets you trigger a run manually from the Actions tab
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Fetch results
+        env:
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+        run: node scripts/fetch-results.js
+      - name: Commit if changed
+        run: |
+          git config user.name "wc26-bot"
+          git config user.email "actions@github.com"
+          git add data/results.json data/results.base.json
+          if git diff --staged --quiet; then
+            echo "No result changes."
+          else
+            git commit -m "Update results $(date -u +%FT%TZ)"
+            git push
+          fi
