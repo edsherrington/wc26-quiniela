@@ -65,4 +65,6 @@
     .join("");
 
   board.innerHTML = html;
+
+  showWinnerModal(results.knockout?.WINNER, rows);
 })();

@@ -355,6 +355,93 @@ body {
 }
 
 /* ═══════════════════════════════════════
+   WINNER MODAL
+═══════════════════════════════════════ */
+.wm-overlay {
+  position: fixed; inset: 0; z-index: 9998;
+  background: rgba(13,27,42,0.82);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+.wm-overlay.open { opacity: 1; pointer-events: all; }
+
+.wm-confetti {
+  position: absolute; inset: 0; overflow: hidden; pointer-events: none;
+}
+.cp {
+  position: absolute; top: -20px; width: 9px; height: 9px;
+  opacity: 0;
+}
+@keyframes confetti-fall {
+  0%   { top: -20px; opacity: 1; }
+  90%  { opacity: 1; }
+  100% { top: 110vh; opacity: 0; }
+}
+@keyframes confetti-spin-cw  { to { transform: rotate(720deg); } }
+@keyframes confetti-spin-ccw { to { transform: rotate(-720deg); } }
+
+.wm-card {
+  position: relative; z-index: 1;
+  background: var(--surface);
+  border-radius: 8px; padding: 36px 32px 28px;
+  text-align: center; max-width: 340px; width: 90%;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.45);
+  transform: scale(0.88); transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
+.wm-overlay.open .wm-card { transform: scale(1); }
+
+.wm-trophy {
+  font-size: 3.2rem; line-height: 1;
+  animation: trophy-bounce 0.7s 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+@keyframes trophy-bounce {
+  from { transform: scale(0) rotate(-15deg); opacity: 0; }
+  to   { transform: scale(1) rotate(0deg);  opacity: 1; }
+}
+
+.wm-logo {
+  display: block; width: 80px; height: 80px;
+  border-radius: 50%; object-fit: cover;
+  background: var(--bg); border: 3px solid var(--gold);
+  margin: 16px auto 0;
+}
+.wm-logo-placeholder { background: var(--bg); }
+
+.wm-congratulations {
+  margin-top: 18px;
+  font-size: 0.75rem; font-weight: 700; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--accent);
+}
+.wm-team {
+  margin-top: 6px;
+  font-size: 1.25rem; font-weight: 800; color: var(--ink);
+  line-height: 1.2;
+}
+.wm-name {
+  margin-top: 4px;
+  font-size: 0.85rem; color: var(--ink-soft);
+}
+.wm-pts {
+  margin-top: 14px;
+  display: inline-block;
+  background: var(--gold-bg); border-radius: 4px;
+  padding: 6px 16px;
+}
+.wm-pts-n { font-size: 1.5rem; font-weight: 900; color: var(--gold); }
+.wm-pts-l { font-size: 0.7rem; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: 0.8px; }
+
+.wm-close {
+  display: block; margin: 22px auto 0;
+  background: var(--header); color: #fff;
+  border: none; border-radius: 4px;
+  padding: 10px 32px; font-size: 0.85rem;
+  font-weight: 700; letter-spacing: 0.3px;
+  cursor: pointer; transition: opacity 0.15s;
+}
+.wm-close:hover { opacity: 0.8; }
+
+/* ═══════════════════════════════════════
    RESPONSIVE
 ═══════════════════════════════════════ */
 @media (min-width: 620px) {
