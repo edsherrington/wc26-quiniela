@@ -26,7 +26,7 @@ jobs:
           node-version: "20"
       - name: Fetch results
         env:
-          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+          FOOTBALL_DATA_KEY: ${{ secrets.FOOTBALL_DATA_KEY }}
         run: node scripts/fetch-results.js
       - name: Commit if changed
         run: |
