@@ -12,18 +12,25 @@
 
   let tapCount = 0;
   let tapTimer = null;
-  let deck = [];
 
+  function loadDeck() {
+    try { return JSON.parse(sessionStorage.getItem("ee-deck") || "[]"); } catch { return []; }
+  }
+  function saveDeck(d) {
+    try { sessionStorage.setItem("ee-deck", JSON.stringify(d)); } catch {}
+  }
   function nextFromDeck() {
+    let deck = loadDeck();
     if (!deck.length) {
-      // Refill and shuffle
       deck = SEQUENCE.map((_, i) => i);
       for (let i = deck.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [deck[i], deck[j]] = [deck[j], deck[i]];
       }
     }
-    return deck.pop();
+    const next = deck.pop();
+    saveDeck(deck);
+    return next;
   }
 
   const banner = document.querySelector(".topbar-image");
