@@ -12,7 +12,19 @@
 
   let tapCount = 0;
   let tapTimer = null;
-  let lastIndex = -1;
+  let deck = [];
+
+  function nextFromDeck() {
+    if (!deck.length) {
+      // Refill and shuffle
+      deck = SEQUENCE.map((_, i) => i);
+      for (let i = deck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [deck[i], deck[j]] = [deck[j], deck[i]];
+      }
+    }
+    return deck.pop();
+  }
 
   const banner = document.querySelector(".topbar-image");
   if (!banner) return;
@@ -27,11 +39,7 @@
     if (tapCount >= 5) {
       tapCount = 0;
       clearTimeout(tapTimer);
-      // Pick a random index, avoiding the same one twice in a row
-      let i;
-      do { i = Math.floor(Math.random() * SEQUENCE.length); } while (i === lastIndex && SEQUENCE.length > 1);
-      lastIndex = i;
-      showSlide(i);
+      showSlide(nextFromDeck());
     }
   });
 
