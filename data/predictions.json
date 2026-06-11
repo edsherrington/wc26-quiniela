@@ -6311,7 +6311,7 @@
       "id": "alison-sherrington",
       "name": "Alison Sherrington",
       "teamName": "The Ali Cats",
-      "logo": null,
+      "logo": "assets/logos/alison-sherrington.png",
       "groupStage": {
         "GS-01": [
           1,
@@ -6682,7 +6682,7 @@
       "id": "hugo-martin-gonzalez-abenza",
       "name": "Hugo & Martin Gonzalez-Abenza",
       "teamName": "Zebro G.O.A.T.",
-      "logo": null,
+      "logo": "assets/logos/hugo-martin-gonzalez-abenza.png",
       "groupStage": {
         "GS-01": [
           2,
@@ -7053,7 +7053,7 @@
       "id": "danny-white",
       "name": "Danny White",
       "teamName": "FC Vuvuzela",
-      "logo": null,
+      "logo": "assets/logos/danny-white.png",
       "groupStage": {
         "GS-01": [
           2,
@@ -7424,7 +7424,7 @@
       "id": "eddie-tufton",
       "name": "Eddie Tufton",
       "teamName": "Eddie's England",
-      "logo": null,
+      "logo": "assets/logos/eddie-tufton.png",
       "groupStage": {
         "GS-01": [
           3,
@@ -7795,7 +7795,7 @@
       "id": "henry-tufton",
       "name": "Henry Tufton",
       "teamName": "Senegal 6 - Iraq 3",
-      "logo": null,
+      "logo": "assets/logos/henry-tufton.png",
       "groupStage": {
         "GS-01": [
           3,
