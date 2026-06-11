@@ -6,9 +6,8 @@
     const d = new Date(); d.setDate(d.getDate() + 1);
     return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
   })();
-  const days = WC.matchDays(fixtures).filter((d) => d <= tomorrowKey);
+  const days = WC.matchDays(fixtures);
   let day = WC.defaultDay(fixtures);
-  if (day > tomorrowKey) day = days[days.length - 1];
 
   const el = {
     matches: document.getElementById("matches"),
@@ -20,6 +19,14 @@
 
   function esc(s) {
     return String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  }
+
+  function firstNames(name) {
+    if (!name) return "";
+    if (name.includes(" & ")) {
+      return name.split(" & ").map(n => n.trim().split(" ")[0]).join(" & ");
+    }
+    return name.split(" ")[0];
   }
 
   function ptsClass(p) {
@@ -39,7 +46,7 @@
     const logo = entrant.logo
       ? `<img class="logo" src="${esc(entrant.logo)}" alt="" data-name="${esc(entrant.teamName || entrant.name)}" />`
       : `<div class="logo"></div>`;
-    const firstName = (entrant.name || "").split(" ")[0];
+    const firstName = firstNames(entrant.name);
     return `
       <div class="pred">
         ${logo}
@@ -60,9 +67,9 @@
     let teamLine, playerLine;
     if (winners.length === 1) {
       teamLine = esc(winners[0].teamName || winners[0].name);
-      playerLine = esc((winners[0].name || "").split(" ")[0]);
+      playerLine = esc(firstNames(winners[0].name));
     } else {
-      teamLine = winners.map((w) => esc((w.name || "").split(" ")[0])).join(" & ");
+      teamLine = winners.map((w) => esc(firstNames(w.name))).join(" & ");
       playerLine = "tied";
     }
     return `
@@ -82,26 +89,35 @@
     const actual = results.groupStage[fx.id];
     const homeName = teamName(fx.home.code, { short: true });
     const awayName = teamName(fx.away.code, { short: true });
+    const showPreds = day <= tomorrowKey;
 
     const scoreBlock = final
       ? `<div class="big">${actual[0]} – ${actual[1]}</div><span class="status ft">Full time</span>`
       : `<div class="big">${WC.kickoffTime(fx.kickoff) || "TBC"}</div><span class="status upcoming">Kick-off</span>`;
 
-    // Order predictions: when final, best scorers first; otherwise keep roster order.
-    let entrants = predictions.entrants.slice();
-    if (final) {
-      entrants.sort((a, b) => {
-        const pa = Scoring.scoreGroupMatch(a.groupStage[fx.id], actual) ?? -1;
-        const pb = Scoring.scoreGroupMatch(b.groupStage[fx.id], actual) ?? -1;
-        return pb - pa;
-      });
-    }
-
-    let toggle = "See predictions";
-    if (final) {
-      const top = entrants[0];
-      const tp = Scoring.scoreGroupMatch(top.groupStage[fx.id], actual);
-      toggle = tp > 0 ? `⭐ ${esc(top.name.split(" ")[0])} +${tp} · see all` : "See predictions & points";
+    let predSection = "";
+    if (showPreds) {
+      let entrants = predictions.entrants.slice();
+      if (final) {
+        entrants.sort((a, b) => {
+          const pa = Scoring.scoreGroupMatch(a.groupStage[fx.id], actual) ?? -1;
+          const pb = Scoring.scoreGroupMatch(b.groupStage[fx.id], actual) ?? -1;
+          return pb - pa;
+        });
+      }
+      let toggle = "See predictions";
+      if (final) {
+        const top = entrants[0];
+        const tp = Scoring.scoreGroupMatch(top.groupStage[fx.id], actual);
+        toggle = tp > 0 ? `⭐ ${esc(firstNames(top.name))} +${tp} · see all` : "See predictions & points";
+      }
+      predSection = `
+        <button class="preds-toggle" type="button" aria-expanded="false">
+          <span class="lbl">${toggle}</span><span class="chev">▾</span>
+        </button>
+        <div class="preds-wrap"><div class="preds">
+          ${entrants.map((e) => predRow(e, fx, final)).join("")}
+        </div></div>`;
     }
 
     return `
@@ -118,12 +134,7 @@
           </div>
         </div>
         <div class="match-meta">Group ${fx.group} · ${esc(fx.venue || "")}</div>
-        <button class="preds-toggle" type="button" aria-expanded="false">
-          <span class="lbl">${toggle}</span><span class="chev">▾</span>
-        </button>
-        <div class="preds-wrap"><div class="preds">
-          ${entrants.map((e) => predRow(e, fx, final)).join("")}
-        </div></div>
+        ${predSection}
       </div>`;
   }
 

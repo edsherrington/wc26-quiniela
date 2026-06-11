@@ -15,10 +15,10 @@
   --gold-bg:   #fef3c7;
   --silver:    #64748b;
   --bronze:    #92400e;
-  --pill-exact: #00b861;
-  --pill-good:  #2563eb;
+  --pill-exact: #16a34a;
+  --pill-good:  #d97706;
   --pill-ok:    #94a3b8;
-  --pill-zero:  #e8edf2;
+  --pill-zero:  #ef4444;
   --shadow:    0 2px 12px rgba(13,27,42,0.08);
   --shadow-md: 0 4px 20px rgba(13,27,42,0.12);
   --radius: 4px;
@@ -248,7 +248,7 @@ body {
 .pts.p4 { background: var(--pill-exact); color: #fff; }
 .pts.p2 { background: var(--pill-good);  color: #fff; }
 .pts.p1 { background: var(--pill-ok);    color: #fff; }
-.pts.p0 { background: var(--pill-zero);  color: var(--ink-muted); }
+.pts.p0 { background: var(--pill-zero);  color: #fff; }
 .pts.pending { background: transparent; color: var(--ink-muted); font-size: 1rem; }
 
 /* ═══════════════════════════════════════
