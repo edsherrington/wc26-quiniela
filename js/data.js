@@ -22,9 +22,9 @@
 
   function kickoffTime(iso) {
     if (!iso) return "";
-    // Fixtures stored as UTC (Z suffix); display in BST (Europe/London)
-    const d = new Date(iso);
-    return d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/London" });
+    // Times are BST from Sky Sports — read directly from the ISO string, no conversion
+    const m = iso.match(/T(\d{2}):(\d{2})/);
+    return m ? `${m[1]}:${m[2]}` : "";
   }
 
   function prettyDate(dayKeyStr) {
