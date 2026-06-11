@@ -12,7 +12,7 @@
 
   let tapCount = 0;
   let tapTimer = null;
-  let seqIndex = 0;
+  let lastIndex = -1;
 
   const banner = document.querySelector(".topbar-image");
   if (!banner) return;
@@ -27,8 +27,11 @@
     if (tapCount >= 5) {
       tapCount = 0;
       clearTimeout(tapTimer);
-      showSlide(seqIndex);
-      seqIndex = (seqIndex + 1) % SEQUENCE.length;
+      // Pick a random index, avoiding the same one twice in a row
+      let i;
+      do { i = Math.floor(Math.random() * SEQUENCE.length); } while (i === lastIndex && SEQUENCE.length > 1);
+      lastIndex = i;
+      showSlide(i);
     }
   });
 
@@ -46,17 +49,20 @@
     document.body.appendChild(overlay);
     requestAnimationFrame(() => overlay.classList.add("open"));
 
-    overlay.addEventListener("click", function dismiss() {
+    let dismissed = false;
+    function dismiss() {
+      if (dismissed) return;
+      dismissed = true;
       overlay.classList.remove("open");
       setTimeout(() => overlay.remove(), 250);
-    });
+      document.removeEventListener("keydown", onKey);
+    }
 
-    document.addEventListener("keydown", function h(e) {
-      if (e.key === "Escape") {
-        overlay.classList.remove("open");
-        setTimeout(() => overlay.remove(), 250);
-        document.removeEventListener("keydown", h);
-      }
-    });
+    const autoTimer = setTimeout(dismiss, 3500);
+
+    overlay.addEventListener("click", () => { clearTimeout(autoTimer); dismiss(); });
+
+    function onKey(e) { if (e.key === "Escape") { clearTimeout(autoTimer); dismiss(); } }
+    document.addEventListener("keydown", onKey);
   }
 })();
