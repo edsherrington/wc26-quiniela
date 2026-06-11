@@ -154,6 +154,13 @@
       return;
     }
     el.matches.innerHTML = potdCard(todays) + todays.map(matchCard).join("");
+
+    // Auto-show a match day GIF the first time a visitor loads on an England match day.
+    const isToday = day === WC.todayKey();
+    const hasEngland = todays.some((f) => f.home.code === "ENG" || f.away.code === "ENG");
+    if (isToday && hasEngland && window.EasterEgg) {
+      setTimeout(() => window.EasterEgg.showEnglandDay(day), 800);
+    }
   }
 
   // Tap a match (header or toggle bar) to expand/collapse its predictions.

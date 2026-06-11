@@ -10,6 +10,11 @@
     { type: "gif",  src: "assets/easter/ee-7.gif" },
   ];
 
+  const GIF_INDICES = SEQUENCE.reduce((acc, item, i) => {
+    if (item.type === "gif") acc.push(i);
+    return acc;
+  }, []);
+
   let tapCount = 0;
   let tapTimer = null;
 
@@ -50,16 +55,21 @@
     }
   });
 
-  function showSlide(i) {
+  function showSlide(i, caption) {
     const item = SEQUENCE[i];
     const overlay = document.createElement("div");
     overlay.className = "ee-overlay";
 
+    let inner = "";
     if (item.type === "gif") {
-      overlay.innerHTML = `<img class="ee-img" src="${item.src}" alt="" />`;
+      inner = `<img class="ee-img" src="${item.src}" alt="" />`;
     } else {
-      overlay.innerHTML = `<div class="ee-text">${item.text}</div>`;
+      inner = `<div class="ee-text">${item.text}</div>`;
     }
+    if (caption) {
+      inner += `<div class="ee-caption">${caption}</div>`;
+    }
+    overlay.innerHTML = inner;
 
     document.body.appendChild(overlay);
     requestAnimationFrame(() => overlay.classList.add("open"));
@@ -80,4 +90,16 @@
     function onKey(e) { if (e.key === "Escape") { clearTimeout(autoTimer); dismiss(); } }
     document.addEventListener("keydown", onKey);
   }
+
+  // Called by index.js when navigating to an England match day.
+  // Shows a random GIF (never RIW) once per calendar day per visitor (localStorage).
+  window.EasterEgg = {
+    showEnglandDay: function (dateKey) {
+      const storageKey = "ee-eng-" + dateKey;
+      try { if (localStorage.getItem(storageKey)) return; } catch {}
+      const idx = GIF_INDICES[Math.floor(Math.random() * GIF_INDICES.length)];
+      showSlide(idx, "Match day! 🏴󠁧󠁢󠁥󠁮󠁧󠁿");
+      try { localStorage.setItem(storageKey, "1"); } catch {}
+    },
+  };
 })();
