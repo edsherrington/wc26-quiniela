@@ -53,7 +53,8 @@
       const s = entrantScore(e, fixtures, results);
       return { entrant: e, ...s };
     });
-    rows.sort((a, b) => b.total - a.total || b.group - a.group);
+    rows.sort((a, b) => b.total - a.total || b.group - a.group
+      || (a.entrant.teamName || a.entrant.name).localeCompare(b.entrant.teamName || b.entrant.name));
     let rank = 0, prev = null;
     rows.forEach((row, i) => {
       if (prev === null || row.total !== prev) { rank = i + 1; prev = row.total; }

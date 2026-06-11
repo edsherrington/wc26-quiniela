@@ -104,6 +104,9 @@
           const pb = Scoring.scoreGroupMatch(b.groupStage[fx.id], actual) ?? -1;
           return pb - pa;
         });
+      } else {
+        entrants.sort((a, b) =>
+          (a.teamName || a.name).localeCompare(b.teamName || b.name));
       }
       let toggle = "See predictions";
       if (final) {
