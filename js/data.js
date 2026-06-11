@@ -10,9 +10,14 @@
     return { fixtures, predictions, results };
   }
 
-  // YYYY-MM-DD straight from the ISO string (no timezone math, so the day never shifts).
+  // Group games by US Eastern date so that late-night BST games (e.g. 3am BST = 10pm ET)
+  // stay with the same calendar day as the earlier games, not bumped to the next day.
   function dayKey(iso) {
-    return (iso || "").split("T")[0];
+    if (!iso) return "";
+    return new Intl.DateTimeFormat("en-CA", {
+      timeZone: "America/New_York",
+      year: "numeric", month: "2-digit", day: "2-digit",
+    }).format(new Date(iso));
   }
 
   function kickoffTime(iso) {
@@ -43,11 +48,10 @@
   }
 
   function todayKey() {
-    const now = new Date();
-    const y = now.getFullYear();
-    const m = String(now.getMonth() + 1).padStart(2, "0");
-    const d = String(now.getDate()).padStart(2, "0");
-    return `${y}-${m}-${d}`;
+    return new Intl.DateTimeFormat("en-CA", {
+      timeZone: "America/New_York",
+      year: "numeric", month: "2-digit", day: "2-digit",
+    }).format(new Date());
   }
 
   // Default day to show: today if it has matches, else the next upcoming day,

@@ -93,7 +93,7 @@
 
     const scoreBlock = final
       ? `<div class="big">${actual[0]} – ${actual[1]}</div><span class="status ft">Full time</span>`
-      : `<div class="big">${WC.kickoffTime(fx.kickoff) || "TBC"}</div><span class="status upcoming">Kick-off</span>`;
+      : `<div class="big">${WC.kickoffTime(fx.kickoff) || "TBC"}</div><span class="status upcoming">Kick-off <small class="tz-note">BST</small></span>`;
 
     let predSection = "";
     if (showPreds) {

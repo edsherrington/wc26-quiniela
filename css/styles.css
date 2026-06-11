@@ -188,6 +188,7 @@ body {
 }
 .status.ft       { background: var(--accent); color: #fff; }
 .status.upcoming { background: var(--navy);   color: #fff; }
+.tz-note         { font-size: 0.55rem; opacity: 0.75; font-weight: 600; letter-spacing: 0.5px; }
 
 .match-meta {
   text-align: center; color: var(--ink-muted); font-size: 0.68rem;
