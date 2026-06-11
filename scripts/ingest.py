@@ -16,6 +16,28 @@ import json
 import re
 import os
 import unicodedata
+from datetime import timezone
+from zoneinfo import ZoneInfo
+
+# Spreadsheet stores local kickoff times — map each venue to its IANA tz
+VENUE_TZ = {
+    "Atlanta":     "America/New_York",
+    "Boston":      "America/New_York",
+    "Miami":       "America/New_York",
+    "New Jersey":  "America/New_York",
+    "Philadelphia":"America/New_York",
+    "Toronto":     "America/Toronto",
+    "Dallas":      "America/Chicago",
+    "Houston":     "America/Chicago",
+    "Kansas City": "America/Chicago",
+    "Guadalajara": "America/Mexico_City",
+    "Mexico City": "America/Mexico_City",
+    "Monterrey":   "America/Monterrey",
+    "Los Angeles": "America/Los_Angeles",
+    "San Francisco":"America/Los_Angeles",
+    "Seattle":     "America/Los_Angeles",
+    "Vancouver":   "America/Vancouver",
+}
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -90,7 +112,11 @@ def build_fixtures(wb):
             n += 1
             home_name, home_code = parse_team(d)
             away_name, away_code = parse_team(f)
-            kickoff = b.isoformat() if hasattr(b, "isoformat") else str(b)
+            venue_str = str(c).strip() if c else ""
+            tz_name = VENUE_TZ.get(venue_str, "America/Chicago")
+            local_dt = b.replace(tzinfo=ZoneInfo(tz_name))
+            utc_dt = local_dt.astimezone(timezone.utc)
+            kickoff = utc_dt.strftime("%Y-%m-%dT%H:%M:%SZ")
             fixtures.append({
                 "id": f"GS-{n:02d}",
                 "group": current_group,
