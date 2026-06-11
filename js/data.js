@@ -17,8 +17,8 @@
 
   function kickoffTime(iso) {
     if (!iso) return "";
-    // Fixtures stored in UTC-6; convert to BST (Europe/London = UTC+1 in summer)
-    const d = new Date(iso + "-06:00");
+    // Fixtures stored as UTC (Z suffix); display in BST (Europe/London)
+    const d = new Date(iso);
     return d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/London" });
   }
 
