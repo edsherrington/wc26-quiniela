@@ -16,8 +16,10 @@
   }
 
   function kickoffTime(iso) {
-    const t = (iso || "").split("T")[1] || "";
-    return t.slice(0, 5); // HH:MM
+    if (!iso) return "";
+    // Fixtures stored in UTC-6; convert to BST (Europe/London = UTC+1 in summer)
+    const d = new Date(iso + "-06:00");
+    return d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/London" });
   }
 
   function prettyDate(dayKeyStr) {
