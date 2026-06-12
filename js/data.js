@@ -10,8 +10,11 @@
     return { fixtures, predictions, results };
   }
 
-  // Group games by US Eastern date so that late-night BST games (e.g. 3am BST = 10pm ET)
-  // stay with the same calendar day as the earlier games, not bumped to the next day.
+  // Kick-offs are stored as hardcoded BST (e.g. "2026-06-15T00:00:00+01:00"). The string
+  // is a correct absolute instant (+01:00), so the two views split cleanly:
+  //  - MATCH DAY = the US Eastern calendar date of that instant, so a game that kicks off
+  //    after midnight UK time stays on the same match day as the earlier US games.
+  //  - KICK-OFF TIME = the BST clock time, read straight off the string (see kickoffTime).
   function dayKey(iso) {
     if (!iso) return "";
     return new Intl.DateTimeFormat("en-CA", {
@@ -22,9 +25,8 @@
 
   function kickoffTime(iso) {
     if (!iso) return "";
-    // Fixtures stored as UTC (Z suffix); display in BST (Europe/London)
-    const d = new Date(iso);
-    return d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/London" });
+    // Stored in BST — read the HH:MM straight off the string (no conversion).
+    return iso.slice(11, 16);
   }
 
   function prettyDate(dayKeyStr) {

@@ -16,32 +16,17 @@ import json
 import re
 import os
 import unicodedata
-from datetime import timezone
-from zoneinfo import ZoneInfo
-
-# Spreadsheet stores local kickoff times — map each venue to its IANA tz
-VENUE_TZ = {
-    "Atlanta":     "America/New_York",
-    "Boston":      "America/New_York",
-    "Miami":       "America/New_York",
-    "New Jersey":  "America/New_York",
-    "Philadelphia":"America/New_York",
-    "Toronto":     "America/Toronto",
-    "Dallas":      "America/Chicago",
-    "Houston":     "America/Chicago",
-    "Kansas City": "America/Chicago",
-    "Guadalajara": "America/Mexico_City",
-    "Mexico City": "America/Mexico_City",
-    "Monterrey":   "America/Monterrey",
-    "Los Angeles": "America/Los_Angeles",
-    "San Francisco":"America/Los_Angeles",
-    "Seattle":     "America/Los_Angeles",
-    "Vancouver":   "America/Vancouver",
-}
+# Kick-off times are hardcoded BST in data/kickoffs.json (keyed by sorted team-code
+# pair, e.g. "ARG|JOR"), sourced from the Sky Sports schedule. We no longer derive
+# them from venue timezones — that local->UTC->BST round-trip produced wrong times.
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 DATA_DIR = os.path.join(ROOT, "data")
+
+# Hardcoded BST kick-offs, keyed by sorted team-code pair (e.g. "ARG|JOR").
+with open(os.path.join(DATA_DIR, "kickoffs.json")) as _kf:
+    KICKOFFS = json.load(_kf)["kickoffs"]
 
 ORGANISER_PATH = os.path.expanduser(
     "~/Downloads/WC26 Quiniela ORGANISER.xlsx"
@@ -112,11 +97,10 @@ def build_fixtures(wb):
             n += 1
             home_name, home_code = parse_team(d)
             away_name, away_code = parse_team(f)
-            venue_str = str(c).strip() if c else ""
-            tz_name = VENUE_TZ.get(venue_str, "America/Chicago")
-            local_dt = b.replace(tzinfo=ZoneInfo(tz_name))
-            utc_dt = local_dt.astimezone(timezone.utc)
-            kickoff = utc_dt.strftime("%Y-%m-%dT%H:%M:%SZ")
+            pair = "|".join(sorted((home_code, away_code)))
+            kickoff = KICKOFFS.get(pair)
+            if kickoff is None:
+                print(f"  WARN: no hardcoded BST kick-off for {home_code} v {away_code}")
             fixtures.append({
                 "id": f"GS-{n:02d}",
                 "group": current_group,
