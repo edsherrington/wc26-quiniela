@@ -6,8 +6,9 @@
     const d = new Date(); d.setDate(d.getDate() + 1);
     return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
   })();
-  const days = WC.matchDays(fixtures);
-  let day = WC.defaultDay(fixtures);
+  const groupDays = WC.matchDays(fixtures);
+  const days = WC.allDays(fixtures, results);
+  let day = WC.defaultDay(fixtures, results);
 
   const el = {
     matches: document.getElementById("matches"),
@@ -141,12 +142,78 @@
       </div>`;
   }
 
+  function knockoutCard(roundKey) {
+    const roundId = roundKey.slice(3);
+    const round = fixtures.knockoutRounds.find((r) => r.id === roundId);
+    if (!round) return "";
+
+    const advanced = new Set(results.knockout[roundId] || []);
+    const advChips = Array.from(advanced).sort()
+      .map((code) => `<span class="ko-adv-chip">${flagFor(code)} <span class="ko-code">${esc(code)}</span></span>`)
+      .join("");
+
+    const rows = predictions.entrants
+      .map((e) => {
+        const picks = (e.knockout || {})[roundId] || [];
+        const pts = picks.filter((p) => advanced.has(p)).length * round.points;
+        return { e, picks, pts };
+      })
+      .sort((a, b) => b.pts - a.pts || (a.e.teamName || a.e.name).localeCompare(b.e.teamName || b.e.name));
+
+    const top = rows[0];
+    const toggleLabel = top && top.pts > 0
+      ? `⭐ ${esc(firstNames(top.e.name))} +${top.pts} · see all predictions`
+      : "See predictions";
+
+    const predsHtml = rows.map(({ e, picks, pts }) => {
+      const chipsHtml = picks.map((code) => {
+        const hit = advanced.has(code);
+        return `<span class="ko-pick-chip ${hit ? "hit" : "miss"}">${flagFor(code)} <span class="ko-code">${esc(code)}</span></span>`;
+      }).join("");
+      const logo = e.logo
+        ? `<img class="logo" src="${esc(e.logo)}" alt="" data-name="${esc(e.teamName || e.name)}" />`
+        : `<div class="logo"></div>`;
+      return `
+        <div class="pred ko-pred">
+          ${logo}
+          <div class="pred-meta">
+            <div class="team-name">${esc(e.teamName || e.name)}</div>
+            <div class="player-name">${esc(firstNames(e.name))}</div>
+          </div>
+          <div class="ko-picks">${chipsHtml}</div>
+          <div class="pts ko-pts-badge">${pts > 0 ? "+" : ""}${pts}</div>
+        </div>`;
+    }).join("");
+
+    return `
+      <div class="match">
+        <div class="ko-adv-section">${advChips}</div>
+        <div class="match-meta">${round.points}pt${round.points > 1 ? "s" : ""} per correct pick · ${advanced.size} teams advanced</div>
+        <button class="preds-toggle" type="button" aria-expanded="false">
+          <span class="lbl">${toggleLabel}</span><span class="chev">▾</span>
+        </button>
+        <div class="preds-wrap"><div class="preds">${predsHtml}</div></div>
+      </div>`;
+  }
+
   function render() {
+    const isKO = day.startsWith("KO:");
     const idx = days.indexOf(day);
     el.prev.disabled = idx <= 0;
     el.next.disabled = idx >= days.length - 1;
-    el.label.innerHTML = `${WC.prettyDate(day)}<small>Matchday ${idx + 1} of ${days.length}</small>`;
+
+    if (isKO) {
+      el.label.innerHTML = `${WC.prettyLabel(day, fixtures)}<small>Knockout stage</small>`;
+    } else {
+      const gIdx = groupDays.indexOf(day);
+      el.label.innerHTML = `${WC.prettyLabel(day, fixtures)}<small>Matchday ${gIdx + 1} of ${groupDays.length}</small>`;
+    }
     el.todayJump.style.display = day === WC.todayKey() ? "none" : "block";
+
+    if (isKO) {
+      el.matches.innerHTML = knockoutCard(day);
+      return;
+    }
 
     const todays = WC.fixturesOnDay(fixtures, day);
     if (!todays.length) {
@@ -177,7 +244,7 @@
   el.next.onclick = () => { const i = days.indexOf(day); if (i < days.length - 1) { day = days[i + 1]; render(); } };
   el.todayJump.onclick = () => {
     const t = WC.todayKey();
-    day = days.includes(t) ? t : WC.defaultDay(fixtures);
+    day = days.includes(t) ? t : WC.defaultDay(fixtures, results);
     render();
   };
 

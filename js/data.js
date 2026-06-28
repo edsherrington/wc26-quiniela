@@ -56,14 +56,39 @@
     }).format(new Date());
   }
 
-  // Default day to show: today if it has matches, else the next upcoming day,
-  // else the last day of the tournament.
-  function defaultDay(fixtures) {
-    const days = matchDays(fixtures);
+  // Knockout round keys that have results, in order. E.g. ['KO:R32', 'KO:R16']
+  function koRoundKeys(fixtures, results) {
+    if (!results) return [];
+    return fixtures.knockoutRounds
+      .filter((r) => r.id !== "WINNER")
+      .filter((r) => { const a = results.knockout[r.id]; return Array.isArray(a) && a.length > 0; })
+      .map((r) => "KO:" + r.id);
+  }
+
+  // All navigable days: group stage dates followed by settled knockout rounds.
+  function allDays(fixtures, results) {
+    return [...matchDays(fixtures), ...koRoundKeys(fixtures, results)];
+  }
+
+  // Human-readable label for a day key (date string or KO:round).
+  function prettyLabel(dayKey, fixtures) {
+    if (!dayKey || !dayKey.startsWith("KO:")) return prettyDate(dayKey);
+    const rid = dayKey.slice(3);
+    const round = (fixtures.knockoutRounds || []).find((r) => r.id === rid);
+    return round ? round.label : rid;
+  }
+
+  // Default day to show: today if it has matches, else the next upcoming group day,
+  // else the most recent settled knockout round, else the last group day.
+  function defaultDay(fixtures, results) {
+    const gDays = matchDays(fixtures);
     const today = todayKey();
-    if (days.includes(today)) return today;
-    const upcoming = days.find((d) => d >= today);
-    return upcoming || days[days.length - 1];
+    if (gDays.includes(today)) return today;
+    const upcoming = gDays.find((d) => d >= today);
+    if (upcoming) return upcoming;
+    const koDays = koRoundKeys(fixtures, results);
+    if (koDays.length) return koDays[koDays.length - 1];
+    return gDays[gDays.length - 1];
   }
 
   function isFinal(fx, results) {
@@ -74,5 +99,6 @@
   window.WC = {
     loadAll, dayKey, kickoffTime, prettyDate, matchDays,
     fixturesOnDay, todayKey, defaultDay, isFinal,
+    koRoundKeys, allDays, prettyLabel,
   };
 })();
