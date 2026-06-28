@@ -315,9 +315,10 @@
     const round = fixtures.knockoutRounds.find((r) => r.id === kofx.round);
     const nextRound = KO_NEXT[kofx.round];
 
+    const dateLabel = kofx.kickoff ? `<div class="fixture-date">${shortDate(kofx.kickoff)}</div>` : "";
     const scoreBlock = final
-      ? `<div class="big">${actual[0]} – ${actual[1]}</div><span class="status ft">Full time</span>`
-      : `<div class="big">${WC.kickoffTime(kofx.kickoff) || "TBC"}</div><span class="status upcoming">Kick-off <small class="tz-note">BST</small></span>`;
+      ? `${dateLabel}<div class="big">${actual[0]} – ${actual[1]}</div><span class="status ft">Full time</span>`
+      : `${dateLabel}<div class="big">${WC.kickoffTime(kofx.kickoff) || "TBC"}</div><span class="status upcoming">Kick-off <small class="tz-note">BST</small></span>`;
 
     const matchCodes = [homeCode, awayCode].filter(Boolean);
     const roundAdvanced = new Set(results.knockout[kofx.round] || []);
@@ -355,7 +356,7 @@
             <span class="nm">${esc(sideName(kofx.away))}</span>
           </div>
         </div>
-        <div class="match-meta">${shortDate(kofx.kickoff)} · ${round ? round.label : kofx.round} · ${esc(kofx.venue || "")}</div>
+        <div class="match-meta">${round ? round.label : kofx.round} · ${esc(kofx.venue || "")}</div>
         <button class="preds-toggle" type="button" aria-expanded="false">
           <span class="lbl">${toggle}</span><span class="chev">▾</span>
         </button>
