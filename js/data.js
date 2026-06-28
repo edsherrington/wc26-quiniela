@@ -78,6 +78,21 @@
     return !!(r && r[0] != null && r[1] != null);
   }
 
+  // Resolve the actual team code for a fixture side that may be TBD.
+  // side = { code, sourceMatch? } — if code is set return it directly,
+  // otherwise walk the bracket using knockoutStage scores.
+  function resolveTeamCode(side, fixtures, results, _depth) {
+    if (side.code) return side.code;
+    if (!side.sourceMatch || (_depth || 0) > 5) return null;
+    const src = (fixtures.knockoutFixtures || []).find((f) => f.id === side.sourceMatch);
+    if (!src) return null;
+    const score = (results.knockoutStage || {})[src.id];
+    if (!score || score[0] == null) return null;
+    const homeCode = resolveTeamCode(src.home, fixtures, results, (_depth || 0) + 1);
+    const awayCode = resolveTeamCode(src.away, fixtures, results, (_depth || 0) + 1);
+    return score[0] >= score[1] ? homeCode : awayCode;
+  }
+
   // All navigable days: group stage dates followed by settled knockout rounds.
   function allDays(fixtures, results) {
     return [...matchDays(fixtures), ...koRoundKeys(fixtures, results)];
@@ -113,6 +128,6 @@
     loadAll, dayKey, kickoffTime, prettyDate, matchDays,
     fixturesOnDay, todayKey, defaultDay, isFinal,
     koRoundKeys, allDays, prettyLabel,
-    knockoutFixturesForRound, isKOFinal,
+    knockoutFixturesForRound, isKOFinal, resolveTeamCode,
   };
 })();

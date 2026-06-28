@@ -171,7 +171,9 @@
       let total = 0;
       for (const kofx of roundFixtures) {
         if (!WC.isKOFinal(kofx, results)) continue;
-        const matchCodes = new Set([kofx.home.code, kofx.away.code]);
+        const hc = WC.resolveTeamCode(kofx.home, fixtures, results);
+        const ac = WC.resolveTeamCode(kofx.away, fixtures, results);
+        const matchCodes = new Set([hc, ac].filter(Boolean));
         total += picks.filter((p) => matchCodes.has(p) && advanced.has(p)).length * pts;
       }
       return { e, total };
@@ -217,6 +219,9 @@
     const nextRound = KO_NEXT[kofx.round];
     if (!nextRound) return "";
 
+    const homeCode = resolvedCode(kofx.home);
+    const awayCode = resolvedCode(kofx.away);
+
     const advanced = nextRound === "WINNER"
       ? new Set(results.knockout.WINNER ? [results.knockout.WINNER] : [])
       : new Set(results.knockout[nextRound] || []);
@@ -226,32 +231,32 @@
       ? new Set(entrant.knockout.WINNER ? [entrant.knockout.WINNER] : [])
       : new Set(entrant.knockout[nextRound] || []);
 
-    const pickedHome = nextPicks.has(kofx.home.code);
-    const pickedAway = nextPicks.has(kofx.away.code);
+    const pickedHome = homeCode && nextPicks.has(homeCode);
+    const pickedAway = awayCode && nextPicks.has(awayCode);
     const pts = koRoundPoints(nextRound);
 
     let earnedPts = null;
-    if (settled) {
+    if (settled && (homeCode || awayCode)) {
       earnedPts = 0;
-      if (pickedHome && advanced.has(kofx.home.code)) earnedPts += pts;
-      if (pickedAway && advanced.has(kofx.away.code)) earnedPts += pts;
+      if (pickedHome && advanced.has(homeCode)) earnedPts += pts;
+      if (pickedAway && advanced.has(awayCode)) earnedPts += pts;
     }
 
-    // Guess cell: flag(s) for the team(s) they picked to win this match
+    // Guess cell: chip(s) for team(s) they picked to win this match
     let guessHtml;
     if (!pickedHome && !pickedAway) {
       guessHtml = `<div class="guess">–</div>`;
     } else {
       const chips = [];
-      if (pickedHome) {
-        const hit = settled && advanced.has(kofx.home.code);
-        const miss = settled && !advanced.has(kofx.home.code);
-        chips.push(`<span class="ko-inline-chip ${hit ? "hit" : miss ? "miss" : ""}">${flagFor(kofx.home.code)} ${esc(teamName(kofx.home.code, { short: true }))}</span>`);
+      if (pickedHome && homeCode) {
+        const hit = settled && advanced.has(homeCode);
+        const miss = settled && !advanced.has(homeCode);
+        chips.push(`<span class="ko-inline-chip ${hit ? "hit" : miss ? "miss" : ""}">${flagFor(homeCode)} ${esc(teamName(homeCode, { short: true }))}</span>`);
       }
-      if (pickedAway) {
-        const hit = settled && advanced.has(kofx.away.code);
-        const miss = settled && !advanced.has(kofx.away.code);
-        chips.push(`<span class="ko-inline-chip ${hit ? "hit" : miss ? "miss" : ""}">${flagFor(kofx.away.code)} ${esc(teamName(kofx.away.code, { short: true }))}</span>`);
+      if (pickedAway && awayCode) {
+        const hit = settled && advanced.has(awayCode);
+        const miss = settled && !advanced.has(awayCode);
+        chips.push(`<span class="ko-inline-chip ${hit ? "hit" : miss ? "miss" : ""}">${flagFor(awayCode)} ${esc(teamName(awayCode, { short: true }))}</span>`);
       }
       guessHtml = `<div class="guess ko-guess">${chips.join("")}</div>`;
     }
@@ -274,12 +279,51 @@
       </div>`;
   }
 
+  // Resolve a knockout fixture side to its team code (walks bracket via knockoutStage scores).
+  function resolvedCode(side) {
+    return WC.resolveTeamCode(side, fixtures, results);
+  }
+
+  // Display helpers for a side that may still be TBD.
+  function sideFlag(side) {
+    const code = resolvedCode(side);
+    if (code) return flagFor(code);
+    // Show both possible teams as split flags before the source match is settled
+    if (side.sourceMatch) {
+      const src = (fixtures.knockoutFixtures || []).find((f) => f.id === side.sourceMatch);
+      if (src) {
+        const h = resolvedCode(src.home);
+        const a = resolvedCode(src.away);
+        if (h && a) return `<span class="tbd-flags">${flagFor(h)}/${flagFor(a)}</span>`;
+        if (h) return flagFor(h);
+        if (a) return flagFor(a);
+      }
+    }
+    return "🏳️";
+  }
+
+  function sideName(side) {
+    const code = resolvedCode(side);
+    if (code) return teamName(code, { short: true });
+    if (side.sourceMatch) {
+      const src = (fixtures.knockoutFixtures || []).find((f) => f.id === side.sourceMatch);
+      if (src) {
+        const h = resolvedCode(src.home);
+        const a = resolvedCode(src.away);
+        const hn = h ? teamName(h, { short: true }) : (src.home.name || "?");
+        const an = a ? teamName(a, { short: true }) : (src.away.name || "?");
+        return `${hn} / ${an}`;
+      }
+    }
+    return side.name || "TBD";
+  }
+
   // Single knockout match card (analogous to group-stage matchCard).
   function knockoutMatchCard(kofx) {
     const final = WC.isKOFinal(kofx, results);
     const actual = (results.knockoutStage || {})[kofx.id];
-    const homeName = teamName(kofx.home.code, { short: true });
-    const awayName = teamName(kofx.away.code, { short: true });
+    const homeCode = resolvedCode(kofx.home);
+    const awayCode = resolvedCode(kofx.away);
     const round = fixtures.knockoutRounds.find((r) => r.id === kofx.round);
     const nextRound = KO_NEXT[kofx.round];
 
@@ -287,7 +331,9 @@
       ? `<div class="big">${actual[0]} – ${actual[1]}</div><span class="status ft">Full time</span>`
       : `<div class="big">${WC.kickoffTime(kofx.kickoff) || "TBC"}</div><span class="status upcoming">Kick-off <small class="tz-note">BST</small></span>`;
 
-    // Sort entrants: after settled → pts desc; before → alphabetical
+    // Use resolved codes for pred matching; fall back gracefully if still TBD.
+    const matchCodes = [homeCode, awayCode].filter(Boolean);
+
     const advanced = nextRound && nextRound !== "WINNER"
       ? new Set(results.knockout[nextRound] || [])
       : new Set(results.knockout.WINNER ? [results.knockout.WINNER] : []);
@@ -295,13 +341,13 @@
     const nextPts = nextRound ? koRoundPoints(nextRound) : 0;
 
     let entrants = predictions.entrants.slice();
-    if (settled) {
+    if (settled && matchCodes.length === 2) {
       entrants.sort((a, b) => {
         const ptsFor = (e) => {
           const picks = nextRound === "WINNER"
             ? (e.knockout.WINNER ? [e.knockout.WINNER] : [])
             : (e.knockout[nextRound] || []);
-          return picks.filter((p) => [kofx.home.code, kofx.away.code].includes(p) && advanced.has(p)).length * nextPts;
+          return picks.filter((p) => matchCodes.includes(p) && advanced.has(p)).length * nextPts;
         };
         return ptsFor(b) - ptsFor(a) || (a.teamName || a.name).localeCompare(b.teamName || b.name);
       });
@@ -309,12 +355,12 @@
       entrants.sort((a, b) => (a.teamName || a.name).localeCompare(b.teamName || b.name));
     }
 
-    const top = settled ? entrants[0] : null;
+    const top = settled && matchCodes.length === 2 ? entrants[0] : null;
     const topPts = top && nextRound ? (() => {
       const picks = nextRound === "WINNER"
         ? (top.knockout.WINNER ? [top.knockout.WINNER] : [])
         : (top.knockout[nextRound] || []);
-      return picks.filter((p) => [kofx.home.code, kofx.away.code].includes(p) && advanced.has(p)).length * nextPts;
+      return picks.filter((p) => matchCodes.includes(p) && advanced.has(p)).length * nextPts;
     })() : 0;
 
     const toggle = settled && topPts > 0
@@ -325,13 +371,13 @@
       <div class="match">
         <div class="match-head">
           <div class="team home">
-            <span class="flag">${flagFor(kofx.home.code)}</span>
-            <span class="nm">${esc(homeName)}</span>
+            <span class="flag">${sideFlag(kofx.home)}</span>
+            <span class="nm">${esc(sideName(kofx.home))}</span>
           </div>
           <div class="score">${scoreBlock}</div>
           <div class="team away">
-            <span class="flag">${flagFor(kofx.away.code)}</span>
-            <span class="nm">${esc(awayName)}</span>
+            <span class="flag">${sideFlag(kofx.away)}</span>
+            <span class="nm">${esc(sideName(kofx.away))}</span>
           </div>
         </div>
         <div class="match-meta">${round ? round.label : kofx.round} · ${esc(kofx.venue || "")}</div>

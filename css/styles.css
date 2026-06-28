@@ -302,6 +302,9 @@ body {
 .ko-inline-chip.miss { background: #f1f5f9; color: #94a3b8; text-decoration: line-through; border-color: #e2e8f0; }
 .ko-guess { display: flex; gap: 4px; flex-wrap: wrap; }
 
+/* TBD split-flag display before a source match is settled */
+.tbd-flags { font-size: 0.85em; opacity: 0.8; }
+
 /* Cap POTD logos when many co-winners */
 .potd-extra {
   display: inline-flex; align-items: center; justify-content: center;

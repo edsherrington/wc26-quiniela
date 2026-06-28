@@ -1053,5 +1053,193 @@
         "code": "GHA"
       }
     }
+  ],
+  "knockoutFixtures": [
+    {
+      "id": "KO-R32-01", "round": "R32",
+      "kickoff": "2026-06-28T20:00:00+01:00", "venue": "Los Angeles",
+      "home": { "code": "RSA", "name": "South Africa" },
+      "away": { "code": "CAN", "name": "Canada" }
+    },
+    {
+      "id": "KO-R32-02", "round": "R32",
+      "kickoff": "2026-06-29T18:00:00+01:00", "venue": "Houston",
+      "home": { "code": "BRA", "name": "Brazil" },
+      "away": { "code": "JPN", "name": "Japan" }
+    },
+    {
+      "id": "KO-R32-03", "round": "R32",
+      "kickoff": "2026-06-29T21:30:00+01:00", "venue": "Boston",
+      "home": { "code": "GER", "name": "Germany" },
+      "away": { "code": "PAR", "name": "Paraguay" }
+    },
+    {
+      "id": "KO-R32-04", "round": "R32",
+      "kickoff": "2026-06-30T00:00:00+01:00", "venue": "Monterrey",
+      "home": { "code": "NED", "name": "Netherlands" },
+      "away": { "code": "MAR", "name": "Morocco" }
+    },
+    {
+      "id": "KO-R32-05", "round": "R32",
+      "kickoff": "2026-06-30T18:00:00+01:00", "venue": "Dallas",
+      "home": { "code": "CIV", "name": "Côte d'Ivoire" },
+      "away": { "code": "NOR", "name": "Norway" }
+    },
+    {
+      "id": "KO-R32-06", "round": "R32",
+      "kickoff": "2026-06-30T22:00:00+01:00", "venue": "New Jersey",
+      "home": { "code": "FRA", "name": "France" },
+      "away": { "code": "SWE", "name": "Sweden" }
+    },
+    {
+      "id": "KO-R32-07", "round": "R32",
+      "kickoff": "2026-07-01T00:00:00+01:00", "venue": "Mexico City",
+      "home": { "code": "MEX", "name": "Mexico" },
+      "away": { "code": "ECU", "name": "Ecuador" }
+    },
+    {
+      "id": "KO-R32-08", "round": "R32",
+      "kickoff": "2026-07-01T17:00:00+01:00", "venue": "Atlanta",
+      "home": { "code": "ENG", "name": "England" },
+      "away": { "code": "COD", "name": "DR Congo" }
+    },
+    {
+      "id": "KO-R32-09", "round": "R32",
+      "kickoff": "2026-07-01T21:00:00+01:00", "venue": "Seattle",
+      "home": { "code": "BEL", "name": "Belgium" },
+      "away": { "code": "SEN", "name": "Senegal" }
+    },
+    {
+      "id": "KO-R32-10", "round": "R32",
+      "kickoff": "2026-07-01T23:00:00+01:00", "venue": "San Francisco",
+      "home": { "code": "USA", "name": "USA" },
+      "away": { "code": "BIH", "name": "Bosnia and Herzegovina" }
+    },
+    {
+      "id": "KO-R32-11", "round": "R32",
+      "kickoff": "2026-07-02T20:00:00+01:00", "venue": "Los Angeles",
+      "home": { "code": "ESP", "name": "Spain" },
+      "away": { "code": "AUT", "name": "Austria" }
+    },
+    {
+      "id": "KO-R32-12", "round": "R32",
+      "kickoff": "2026-07-03T00:00:00+01:00", "venue": "Toronto",
+      "home": { "code": "POR", "name": "Portugal" },
+      "away": { "code": "CRO", "name": "Croatia" }
+    },
+    {
+      "id": "KO-R32-13", "round": "R32",
+      "kickoff": "2026-07-03T04:00:00+01:00", "venue": "Vancouver",
+      "home": { "code": "SUI", "name": "Switzerland" },
+      "away": { "code": "ALG", "name": "Algeria" }
+    },
+    {
+      "id": "KO-R32-14", "round": "R32",
+      "kickoff": "2026-07-03T19:00:00+01:00", "venue": "Dallas",
+      "home": { "code": "AUS", "name": "Australia" },
+      "away": { "code": "EGY", "name": "Egypt" }
+    },
+    {
+      "id": "KO-R32-15", "round": "R32",
+      "kickoff": "2026-07-03T23:00:00+01:00", "venue": "Miami",
+      "home": { "code": "ARG", "name": "Argentina" },
+      "away": { "code": "CPV", "name": "Cape Verde" }
+    },
+    {
+      "id": "KO-R32-16", "round": "R32",
+      "kickoff": "2026-07-04T01:30:00+01:00", "venue": "Kansas City",
+      "home": { "code": "COL", "name": "Colombia" },
+      "away": { "code": "GHA", "name": "Ghana" }
+    },
+    {
+      "id": "KO-R16-01", "round": "R16",
+      "kickoff": "2026-07-04T18:00:00+01:00", "venue": "Houston",
+      "home": { "code": null, "name": "W M73", "sourceMatch": "KO-R32-01" },
+      "away": { "code": null, "name": "W M75", "sourceMatch": "KO-R32-04" }
+    },
+    {
+      "id": "KO-R16-02", "round": "R16",
+      "kickoff": "2026-07-04T22:00:00+01:00", "venue": "Philadelphia",
+      "home": { "code": null, "name": "W M74", "sourceMatch": "KO-R32-03" },
+      "away": { "code": null, "name": "W M77", "sourceMatch": "KO-R32-06" }
+    },
+    {
+      "id": "KO-R16-03", "round": "R16",
+      "kickoff": "2026-07-05T21:00:00+01:00", "venue": "New Jersey",
+      "home": { "code": null, "name": "W M76", "sourceMatch": "KO-R32-02" },
+      "away": { "code": null, "name": "W M78", "sourceMatch": "KO-R32-05" }
+    },
+    {
+      "id": "KO-R16-04", "round": "R16",
+      "kickoff": "2026-07-05T23:00:00+01:00", "venue": "Mexico City",
+      "home": { "code": null, "name": "W M79", "sourceMatch": "KO-R32-07" },
+      "away": { "code": null, "name": "W M80", "sourceMatch": "KO-R32-08" }
+    },
+    {
+      "id": "KO-R16-05", "round": "R16",
+      "kickoff": "2026-07-06T19:00:00+01:00", "venue": "Dallas",
+      "home": { "code": null, "name": "W M83", "sourceMatch": "KO-R32-12" },
+      "away": { "code": null, "name": "W M84", "sourceMatch": "KO-R32-11" }
+    },
+    {
+      "id": "KO-R16-06", "round": "R16",
+      "kickoff": "2026-07-06T23:00:00+01:00", "venue": "Seattle",
+      "home": { "code": null, "name": "W M81", "sourceMatch": "KO-R32-10" },
+      "away": { "code": null, "name": "W M82", "sourceMatch": "KO-R32-09" }
+    },
+    {
+      "id": "KO-R16-07", "round": "R16",
+      "kickoff": "2026-07-07T17:00:00+01:00", "venue": "Atlanta",
+      "home": { "code": null, "name": "W M86", "sourceMatch": "KO-R32-15" },
+      "away": { "code": null, "name": "W M88", "sourceMatch": "KO-R32-14" }
+    },
+    {
+      "id": "KO-R16-08", "round": "R16",
+      "kickoff": "2026-07-07T21:00:00+01:00", "venue": "Vancouver",
+      "home": { "code": null, "name": "W M85", "sourceMatch": "KO-R32-13" },
+      "away": { "code": null, "name": "W M87", "sourceMatch": "KO-R32-16" }
+    },
+    {
+      "id": "KO-QF-01", "round": "QF",
+      "kickoff": "2026-07-09T21:00:00+01:00", "venue": "Boston",
+      "home": { "code": null, "name": "W M89", "sourceMatch": "KO-R16-02" },
+      "away": { "code": null, "name": "W M90", "sourceMatch": "KO-R16-01" }
+    },
+    {
+      "id": "KO-QF-02", "round": "QF",
+      "kickoff": "2026-07-10T20:00:00+01:00", "venue": "Los Angeles",
+      "home": { "code": null, "name": "W M93", "sourceMatch": "KO-R16-05" },
+      "away": { "code": null, "name": "W M94", "sourceMatch": "KO-R16-06" }
+    },
+    {
+      "id": "KO-QF-03", "round": "QF",
+      "kickoff": "2026-07-11T22:00:00+01:00", "venue": "Miami",
+      "home": { "code": null, "name": "W M91", "sourceMatch": "KO-R16-03" },
+      "away": { "code": null, "name": "W M92", "sourceMatch": "KO-R16-04" }
+    },
+    {
+      "id": "KO-QF-04", "round": "QF",
+      "kickoff": "2026-07-12T01:00:00+01:00", "venue": "Kansas City",
+      "home": { "code": null, "name": "W M95", "sourceMatch": "KO-R16-07" },
+      "away": { "code": null, "name": "W M96", "sourceMatch": "KO-R16-08" }
+    },
+    {
+      "id": "KO-SF-01", "round": "SF",
+      "kickoff": "2026-07-14T19:00:00+01:00", "venue": "Dallas",
+      "home": { "code": null, "name": "W M97", "sourceMatch": "KO-QF-01" },
+      "away": { "code": null, "name": "W M98", "sourceMatch": "KO-QF-02" }
+    },
+    {
+      "id": "KO-SF-02", "round": "SF",
+      "kickoff": "2026-07-15T20:00:00+01:00", "venue": "Atlanta",
+      "home": { "code": null, "name": "W M99", "sourceMatch": "KO-QF-03" },
+      "away": { "code": null, "name": "W M100", "sourceMatch": "KO-QF-04" }
+    },
+    {
+      "id": "KO-F-01", "round": "F",
+      "kickoff": "2026-07-19T20:00:00+01:00", "venue": "New Jersey",
+      "home": { "code": null, "name": "W M101", "sourceMatch": "KO-SF-01" },
+      "away": { "code": null, "name": "W M102", "sourceMatch": "KO-SF-02" }
+    }
   ]
 }

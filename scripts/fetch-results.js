@@ -28,10 +28,23 @@ function roundIdFromStage(stage) {
     case "LAST_16":        return "R16";
     case "QUARTER_FINALS": return "QF";
     case "SEMI_FINALS":    return "SF";
-    case "FINAL":
-    case "THIRD_PLACE":    return "F";
+    case "FINAL":          return "F";
+    case "THIRD_PLACE":    return null; // not scored
     default:               return null;
   }
+}
+
+// Walk the static bracket to resolve a side's team code from knockoutStage scores.
+function resolveTeamCode(side, fixtures, scores, depth) {
+  if (side.code) return side.code;
+  if (!side.sourceMatch || (depth || 0) > 5) return null;
+  const src = (fixtures.knockoutFixtures || []).find((f) => f.id === side.sourceMatch);
+  if (!src) return null;
+  const score = scores[src.id];
+  if (!score || score[0] == null) return null;
+  const h = resolveTeamCode(src.home, fixtures, scores, (depth || 0) + 1);
+  const a = resolveTeamCode(src.away, fixtures, scores, (depth || 0) + 1);
+  return score[0] >= score[1] ? h : a;
 }
 
 function normalize(s) {
@@ -82,12 +95,6 @@ async function main() {
   const overrides = loadJson("overrides.json");
   const lookup    = buildLookup(fixtures);
 
-  // Reverse lookup: team code -> display name (built from group stage fixtures)
-  const nameLookup = {};
-  for (const f of fixtures.groupStage) {
-    for (const side of [f.home, f.away]) nameLookup[side.code] = side.name;
-  }
-
   const pairIndex = {};
   for (const f of fixtures.groupStage) {
     const key = [f.home.code, f.away.code].sort().join("|");
@@ -100,9 +107,16 @@ async function main() {
   console.log(`  ${matches.length} matches returned.`);
 
   const base    = { groupStage: {}, knockoutStage: {}, knockout: { R32: [], R16: [], QF: [], SF: [], F: [], WINNER: null } };
-  const koSets  = { R32: new Set(), R16: new Set(), QF: new Set(), SF: new Set(), F: new Set() };
-  const koFixturesList = [];
   const unmatched = [];
+
+  // Build kickoff-time lookup for static KO fixtures (ms since epoch → fixture id).
+  const koKickoffMap = {};
+  for (const kofx of (fixtures.knockoutFixtures || [])) {
+    if (kofx.kickoff) koKickoffMap[new Date(kofx.kickoff).getTime()] = kofx.id;
+  }
+
+  // Process all matches sorted by date so earlier results are available when resolving later ones.
+  matches.sort((a, b) => (a.utcDate || "").localeCompare(b.utcDate || ""));
 
   for (const m of matches) {
     const homeCode = codeFor(m.homeTeam, lookup);
@@ -117,75 +131,85 @@ async function main() {
     }
 
     if (koRound) {
-      if (koSets[koRound]) {
-        koSets[koRound].add(homeCode);
-        koSets[koRound].add(awayCode);
+      if (!finished) continue;
+      const gh = m.score?.fullTime?.home;
+      const ga = m.score?.fullTime?.away;
+      if (gh == null || ga == null) continue;
+
+      // Match to our static fixture by kickoff time.
+      const kickoffMs = m.utcDate ? new Date(m.utcDate).getTime() : null;
+      const fixtureId = kickoffMs ? koKickoffMap[kickoffMs] : null;
+
+      if (fixtureId) {
+        // Store score in the right home/away orientation for our static fixture.
+        const kofx = fixtures.knockoutFixtures.find((f) => f.id === fixtureId);
+        const staticHome = resolveTeamCode(kofx.home, fixtures, base.knockoutStage);
+        const homeIsHome = staticHome === homeCode || staticHome === null;
+        base.knockoutStage[fixtureId] = homeIsHome ? [gh, ga] : [ga, gh];
+      } else {
+        console.log(`  ! KO result not matched to fixture: ${m.homeTeam.name} v ${m.awayTeam.name} ${m.utcDate}`);
       }
 
-      // Collect knockout fixture metadata (scheduled and finished)
-      koFixturesList.push({
-        id:      "KO-" + m.id,
-        round:   koRound,
-        kickoff: m.utcDate || null,
-        venue:   m.venue   || null,
-        home:    { code: homeCode, name: nameLookup[homeCode] || homeCode },
-        away:    { code: awayCode, name: nameLookup[awayCode] || awayCode },
-      });
-
-      // Score for finished knockout matches
-      if (finished) {
-        const gh = m.score?.fullTime?.home;
-        const ga = m.score?.fullTime?.away;
-        if (gh != null && ga != null) base.knockoutStage["KO-" + m.id] = [gh, ga];
-      }
-
-      // Champion = winner of the Final (not 3rd place)
-      if (stage === "FINAL" && finished) {
+      if (stage === "FINAL") {
         const w = m.score?.winner;
         if (w === "HOME_TEAM") base.knockout.WINNER = homeCode;
         else if (w === "AWAY_TEAM") base.knockout.WINNER = awayCode;
       }
     } else {
-      // Group stage — record finished scores
-      if (finished) {
-        const gh = m.score?.fullTime?.home;
-        const ga = m.score?.fullTime?.away;
-        if (gh != null && ga != null) {
-          const key = [homeCode, awayCode].sort().join("|");
-          const hit = pairIndex[key];
-          if (!hit) { unmatched.push(`${m.homeTeam.name} v ${m.awayTeam.name} (no group fixture)`); continue; }
-          base.groupStage[hit.id] = hit.homeCode === homeCode ? [gh, ga] : [ga, gh];
-        }
+      // Group stage — record finished scores.
+      if (!finished) continue;
+      const gh = m.score?.fullTime?.home;
+      const ga = m.score?.fullTime?.away;
+      if (gh != null && ga != null) {
+        const key = [homeCode, awayCode].sort().join("|");
+        const hit = pairIndex[key];
+        if (!hit) { unmatched.push(`${m.homeTeam.name} v ${m.awayTeam.name} (no group fixture)`); continue; }
+        base.groupStage[hit.id] = hit.homeCode === homeCode ? [gh, ga] : [ga, gh];
       }
     }
   }
 
-  for (const r of Object.keys(koSets)) base.knockout[r] = Array.from(koSets[r]).sort();
-
-  // Sort KO fixtures by kickoff time and write back to fixtures.json
-  koFixturesList.sort((a, b) => (a.kickoff || "").localeCompare(b.kickoff || ""));
-  fixtures.knockoutFixtures = koFixturesList;
+  // Derive knockout advancement arrays from static bracket + scores.
+  // R32 = all 32 teams in the bracket (from the static fixtures).
+  const koSets = { R32: new Set(), R16: new Set(), QF: new Set(), SF: new Set(), F: new Set() };
+  for (const kofx of (fixtures.knockoutFixtures || []).filter((f) => f.round === "R32")) {
+    if (kofx.home.code) koSets.R32.add(kofx.home.code);
+    if (kofx.away.code) koSets.R32.add(kofx.away.code);
+  }
+  // Advancement: winner of each match reaches the next round.
+  const roundNext = { R32: "R16", R16: "QF", QF: "SF", SF: "F" };
+  for (const kofx of (fixtures.knockoutFixtures || [])) {
+    const score = base.knockoutStage[kofx.id];
+    if (!score) continue;
+    const h = resolveTeamCode(kofx.home, fixtures, base.knockoutStage);
+    const a = resolveTeamCode(kofx.away, fixtures, base.knockoutStage);
+    const winner = score[0] >= score[1] ? h : a;
+    const next = roundNext[kofx.round];
+    if (next && winner) koSets[next].add(winner);
+  }
+  for (const r of ["R32", "R16", "QF", "SF", "F"]) {
+    base.knockout[r] = Array.from(koSets[r]).sort();
+  }
 
   const merged = mergeResults(base, overrides);
   merged.lastUpdated = new Date().toISOString();
   merged.note = "Auto-generated by fetch-results.js (football-data.org + overrides.json). Do not hand-edit; use admin page or overrides.json.";
 
   console.log(`  Group results: ${Object.keys(merged.groupStage).length}/72 final.`);
-  console.log(`  KO fixtures collected: ${koFixturesList.length}`);
+  console.log(`  KO results: ${Object.keys(merged.knockoutStage).length} matches settled.`);
   console.log(`  Knockout reached: ` +
     ["R32","R16","QF","SF","F"].map(r => `${r}=${merged.knockout[r].length}`).join(" ") +
     ` WINNER=${merged.knockout.WINNER || "-"}`);
   if (unmatched.length) {
-    console.log(`  ! ${unmatched.length} unmatched fixture(s) — add an alias if these are real teams:`);
+    console.log(`  ! ${unmatched.length} unmatched fixture(s):`);
     for (const u of unmatched.slice(0, 20)) console.log(`      ${u}`);
   }
 
   if (DRY) { console.log("\n--dry-run: not writing files"); return; }
 
-  fs.writeFileSync(path.join(DATA, "fixtures.json"),      JSON.stringify(fixtures, null, 2));
-  fs.writeFileSync(path.join(DATA, "results.base.json"),  JSON.stringify(base,     null, 2));
-  fs.writeFileSync(path.join(DATA, "results.json"),       JSON.stringify(merged,   null, 2));
-  console.log("\nWrote data/fixtures.json, data/results.json (+ results.base.json)");
+  fs.writeFileSync(path.join(DATA, "results.base.json"),  JSON.stringify(base,   null, 2));
+  fs.writeFileSync(path.join(DATA, "results.json"),       JSON.stringify(merged, null, 2));
+  console.log("\nWrote data/results.json (+ results.base.json). fixtures.json unchanged.");
 }
 
 main().catch(e => { console.error(e.message); process.exit(1); });
