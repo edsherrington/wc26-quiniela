@@ -289,7 +289,12 @@
       3
     ]
   },
-  "knockoutStage": {},
+  "knockoutStage": {
+    "KO-R32-01": [
+      0,
+      1
+    ]
+  },
   "knockout": {
     "R32": [
       "ALG",
@@ -325,7 +330,9 @@
       "SWE",
       "USA"
     ],
-    "R16": [],
+    "R16": [
+      "CAN"
+    ],
     "QF": [],
     "SF": [],
     "F": [],
