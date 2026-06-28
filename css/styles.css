@@ -305,14 +305,9 @@ body {
   font-size: 0.7rem; font-weight: 600; white-space: nowrap;
   border: 1px solid transparent;
 }
-/* Pre-match states */
-.ko-team-chip.pending-pick { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
-.ko-team-chip.no-pick      { background: var(--bg); color: var(--ink-muted); border-color: var(--border); opacity: 0.55; }
-/* Post-match states */
-.ko-team-chip.correct { background: #dcfce7; color: #15803d; border-color: #bbf7d0; }          /* picked + advanced ✓ */
-.ko-team-chip.wrong   { background: #fee2e2; color: #b91c1c; border-color: #fca5a5; text-decoration: line-through; } /* picked + lost ✗ */
-.ko-team-chip.missed  { background: #fef3c7; color: #92400e; border-color: #fde68a; }          /* didn't pick + they won */
-.ko-team-chip.out     { background: var(--bg); color: var(--ink-muted); border-color: var(--border); opacity: 0.4; } /* irrelevant */
+/* picked for this round → green tick; not picked → dim */
+.ko-team-chip.correct { background: #dcfce7; color: #15803d; border-color: #bbf7d0; }
+.ko-team-chip.out     { background: var(--bg); color: var(--ink-muted); border-color: var(--border); opacity: 0.45; }
 .chip-icon { font-size: 0.8em; margin-left: 1px; }
 
 /* TBD split-flag display before a source match is settled */

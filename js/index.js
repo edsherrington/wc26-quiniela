@@ -32,9 +32,8 @@
 
   function ptsClass(p) {
     if (p === 0) return "p0";
-    if (p <= 1) return "p1";
-    if (p <= 4) return "p2";
-    return "p4"; // anything above 4 (KO pts: 6, 9, 14, 25) gets the gold class
+    if (p <= 2) return "p2"; // partial (e.g. 1 of 2 R32 picks correct)
+    return "p4";             // 4+ pts → gold (both R32 correct, or any R16+ correct pick)
   }
 
   function predRow(entrant, fx, final) {
@@ -154,27 +153,20 @@
     return r ? r.points : 0;
   }
 
-  // Round-level POTD: total pts across all settled matches in the round.
+  // Round-level POTD: total pts across all fixtures in the round (same logic as scoring.js).
   function koRoundPotdCard(roundId, roundFixtures) {
-    const nextRound = KO_NEXT[roundId];
-    if (!nextRound) return "";
-    const advanced = nextRound === "WINNER"
-      ? new Set(results.knockout.WINNER ? [results.knockout.WINNER] : [])
-      : new Set(results.knockout[nextRound] || []);
-    if (!advanced.size) return "";
-    const pts = koRoundPoints(nextRound);
+    const roundAdvanced = new Set(results.knockout[roundId] || []);
+    if (!roundAdvanced.size) return "";
+    const roundPts = koRoundPoints(roundId);
 
     const rows = predictions.entrants.map((e) => {
-      const picks = nextRound === "WINNER"
-        ? (e.knockout.WINNER ? [e.knockout.WINNER] : [])
-        : (e.knockout[nextRound] || []);
+      const picks = new Set(e.knockout[roundId] || []);
       let total = 0;
       for (const kofx of roundFixtures) {
-        if (!WC.isKOFinal(kofx, results)) continue;
         const hc = WC.resolveTeamCode(kofx.home, fixtures, results);
         const ac = WC.resolveTeamCode(kofx.away, fixtures, results);
-        const matchCodes = new Set([hc, ac].filter(Boolean));
-        total += picks.filter((p) => matchCodes.has(p) && advanced.has(p)).length * pts;
+        if (hc && picks.has(hc) && roundAdvanced.has(hc)) total += roundPts;
+        if (ac && picks.has(ac) && roundAdvanced.has(ac)) total += roundPts;
       }
       return { e, total };
     });
@@ -214,49 +206,27 @@
   }
 
   // Per-entrant row for a knockout match.
-  // Shows both teams always — with pick/outcome chips — and total pts for the match.
+  // Chip = did this player predict this team to be IN this round?
+  // Pts  = correct round predictions × round.points (same logic as scoring.js).
   function koPredRow(entrant, kofx) {
-    const nextRound = KO_NEXT[kofx.round];
-    if (!nextRound) return "";
-
     const homeCode = resolvedCode(kofx.home);
     const awayCode = resolvedCode(kofx.away);
 
-    const advanced = nextRound === "WINNER"
-      ? new Set(results.knockout.WINNER ? [results.knockout.WINNER] : [])
-      : new Set(results.knockout[nextRound] || []);
-    const settled = advanced.size > 0 || WC.isKOFinal(kofx, results);
+    const roundPicks   = new Set(entrant.knockout[kofx.round] || []);
+    const roundAdvanced = new Set(results.knockout[kofx.round] || []);
+    const roundPts = koRoundPoints(kofx.round);
 
-    const picks = nextRound === "WINNER"
-      ? new Set(entrant.knockout.WINNER ? [entrant.knockout.WINNER] : [])
-      : new Set(entrant.knockout[nextRound] || []);
-
-    const pts = koRoundPoints(nextRound);
-
-    // Build a chip for each team: always shown, styled by pick+outcome state.
     function teamChip(code) {
       if (!code) return "";
-      const picked = picks.has(code);
-      const didAdvance = settled ? advanced.has(code) : null;
-      let cls, icon;
-      if (didAdvance === null) {
-        // Match not yet settled
-        cls = picked ? "pending-pick" : "no-pick";
-        icon = picked ? "✓" : "";
-      } else {
-        if (picked && didAdvance)  { cls = "correct"; icon = "✓"; }
-        else if (picked)           { cls = "wrong";   icon = "✗"; }
-        else if (didAdvance)       { cls = "missed";  icon = ""; }
-        else                       { cls = "out";     icon = ""; }
-      }
-      return `<span class="ko-team-chip ${cls}">${flagFor(code)} ${esc(teamName(code, { short: true }))}${icon ? `<span class="chip-icon">${icon}</span>` : ""}</span>`;
+      const picked = roundPicks.has(code);
+      return `<span class="ko-team-chip ${picked ? "correct" : "out"}">${flagFor(code)} ${esc(teamName(code, { short: true }))}${picked ? '<span class="chip-icon">✓</span>' : ""}</span>`;
     }
 
     let earnedPts = null;
-    if (settled && (homeCode || awayCode)) {
+    if (roundAdvanced.size > 0 && (homeCode || awayCode)) {
       earnedPts = 0;
-      if (homeCode && picks.has(homeCode) && advanced.has(homeCode)) earnedPts += pts;
-      if (awayCode && picks.has(awayCode) && advanced.has(awayCode)) earnedPts += pts;
+      if (homeCode && roundPicks.has(homeCode) && roundAdvanced.has(homeCode)) earnedPts += roundPts;
+      if (awayCode && roundPicks.has(awayCode) && roundAdvanced.has(awayCode)) earnedPts += roundPts;
     }
 
     const ptsHtml = earnedPts != null
@@ -328,38 +298,25 @@
       ? `<div class="big">${actual[0]} – ${actual[1]}</div><span class="status ft">Full time</span>`
       : `<div class="big">${WC.kickoffTime(kofx.kickoff) || "TBC"}</div><span class="status upcoming">Kick-off <small class="tz-note">BST</small></span>`;
 
-    // Use resolved codes for pred matching; fall back gracefully if still TBD.
     const matchCodes = [homeCode, awayCode].filter(Boolean);
+    const roundAdvanced = new Set(results.knockout[kofx.round] || []);
+    const roundPts = koRoundPoints(kofx.round);
+    const settled = roundAdvanced.size > 0;
 
-    const advanced = nextRound && nextRound !== "WINNER"
-      ? new Set(results.knockout[nextRound] || [])
-      : new Set(results.knockout.WINNER ? [results.knockout.WINNER] : []);
-    const settled = advanced.size > 0 || final;
-    const nextPts = nextRound ? koRoundPoints(nextRound) : 0;
+    const matchPtsFor = (e) => {
+      const picks = new Set(e.knockout[kofx.round] || []);
+      return matchCodes.filter((c) => picks.has(c) && roundAdvanced.has(c)).length * roundPts;
+    };
 
     let entrants = predictions.entrants.slice();
     if (settled && matchCodes.length === 2) {
-      entrants.sort((a, b) => {
-        const ptsFor = (e) => {
-          const picks = nextRound === "WINNER"
-            ? (e.knockout.WINNER ? [e.knockout.WINNER] : [])
-            : (e.knockout[nextRound] || []);
-          return picks.filter((p) => matchCodes.includes(p) && advanced.has(p)).length * nextPts;
-        };
-        return ptsFor(b) - ptsFor(a) || (a.teamName || a.name).localeCompare(b.teamName || b.name);
-      });
+      entrants.sort((a, b) => matchPtsFor(b) - matchPtsFor(a) || (a.teamName || a.name).localeCompare(b.teamName || b.name));
     } else {
       entrants.sort((a, b) => (a.teamName || a.name).localeCompare(b.teamName || b.name));
     }
 
     const top = settled && matchCodes.length === 2 ? entrants[0] : null;
-    const topPts = top && nextRound ? (() => {
-      const picks = nextRound === "WINNER"
-        ? (top.knockout.WINNER ? [top.knockout.WINNER] : [])
-        : (top.knockout[nextRound] || []);
-      return picks.filter((p) => matchCodes.includes(p) && advanced.has(p)).length * nextPts;
-    })() : 0;
-
+    const topPts = top ? matchPtsFor(top) : 0;
     const toggle = settled && topPts > 0
       ? `⭐ ${esc(firstNames(top.name))} +${topPts} · see all`
       : "See picks";
