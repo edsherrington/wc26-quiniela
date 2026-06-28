@@ -107,7 +107,8 @@
   }
 
   // Default day to show: today if it has matches, else the next upcoming group day,
-  // else the most recent settled knockout round, else the last group day.
+  // else the first KO round that still has unsettled fixtures,
+  // else the last KO round (everything done).
   function defaultDay(fixtures, results) {
     const gDays = matchDays(fixtures);
     const today = todayKey();
@@ -115,8 +116,18 @@
     const upcoming = gDays.find((d) => d >= today);
     if (upcoming) return upcoming;
     const koDays = koRoundKeys(fixtures, results);
-    if (koDays.length) return koDays[koDays.length - 1];
-    return gDays[gDays.length - 1];
+    if (!koDays.length) return gDays[gDays.length - 1];
+    const kf = fixtures.knockoutFixtures || [];
+    const ks = results.knockoutStage || {};
+    for (const koDay of koDays) {
+      const roundId = koDay.slice(3);
+      const roundFx = kf.filter((f) => f.round === roundId);
+      const allDone = roundFx.length > 0 && roundFx.every((f) => {
+        const r = ks[f.id]; return r && r[0] != null && r[1] != null;
+      });
+      if (!allDone) return koDay;
+    }
+    return koDays[koDays.length - 1];
   }
 
   function isFinal(fx, results) {

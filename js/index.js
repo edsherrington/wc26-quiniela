@@ -213,8 +213,8 @@
       </div>`;
   }
 
-  // Per-entrant row for a knockout match: shows which of the two teams they picked
-  // to advance (from their next-round picks), and pts earned.
+  // Per-entrant row for a knockout match.
+  // Shows both teams always — with pick/outcome chips — and total pts for the match.
   function koPredRow(entrant, kofx) {
     const nextRound = KO_NEXT[kofx.round];
     if (!nextRound) return "";
@@ -227,38 +227,36 @@
       : new Set(results.knockout[nextRound] || []);
     const settled = advanced.size > 0 || WC.isKOFinal(kofx, results);
 
-    const nextPicks = nextRound === "WINNER"
+    const picks = nextRound === "WINNER"
       ? new Set(entrant.knockout.WINNER ? [entrant.knockout.WINNER] : [])
       : new Set(entrant.knockout[nextRound] || []);
 
-    const pickedHome = homeCode && nextPicks.has(homeCode);
-    const pickedAway = awayCode && nextPicks.has(awayCode);
     const pts = koRoundPoints(nextRound);
+
+    // Build a chip for each team: always shown, styled by pick+outcome state.
+    function teamChip(code) {
+      if (!code) return "";
+      const picked = picks.has(code);
+      const didAdvance = settled ? advanced.has(code) : null;
+      let cls, icon;
+      if (didAdvance === null) {
+        // Match not yet settled
+        cls = picked ? "pending-pick" : "no-pick";
+        icon = picked ? "✓" : "";
+      } else {
+        if (picked && didAdvance)  { cls = "correct"; icon = "✓"; }
+        else if (picked)           { cls = "wrong";   icon = "✗"; }
+        else if (didAdvance)       { cls = "missed";  icon = ""; }
+        else                       { cls = "out";     icon = ""; }
+      }
+      return `<span class="ko-team-chip ${cls}">${flagFor(code)} ${esc(teamName(code, { short: true }))}${icon ? `<span class="chip-icon">${icon}</span>` : ""}</span>`;
+    }
 
     let earnedPts = null;
     if (settled && (homeCode || awayCode)) {
       earnedPts = 0;
-      if (pickedHome && advanced.has(homeCode)) earnedPts += pts;
-      if (pickedAway && advanced.has(awayCode)) earnedPts += pts;
-    }
-
-    // Guess cell: chip(s) for team(s) they picked to win this match
-    let guessHtml;
-    if (!pickedHome && !pickedAway) {
-      guessHtml = `<div class="guess">–</div>`;
-    } else {
-      const chips = [];
-      if (pickedHome && homeCode) {
-        const hit = settled && advanced.has(homeCode);
-        const miss = settled && !advanced.has(homeCode);
-        chips.push(`<span class="ko-inline-chip ${hit ? "hit" : miss ? "miss" : ""}">${flagFor(homeCode)} ${esc(teamName(homeCode, { short: true }))}</span>`);
-      }
-      if (pickedAway && awayCode) {
-        const hit = settled && advanced.has(awayCode);
-        const miss = settled && !advanced.has(awayCode);
-        chips.push(`<span class="ko-inline-chip ${hit ? "hit" : miss ? "miss" : ""}">${flagFor(awayCode)} ${esc(teamName(awayCode, { short: true }))}</span>`);
-      }
-      guessHtml = `<div class="guess ko-guess">${chips.join("")}</div>`;
+      if (homeCode && picks.has(homeCode) && advanced.has(homeCode)) earnedPts += pts;
+      if (awayCode && picks.has(awayCode) && advanced.has(awayCode)) earnedPts += pts;
     }
 
     const ptsHtml = earnedPts != null
@@ -270,11 +268,10 @@
       : `<div class="logo"></div>`;
 
     return `
-      <div class="pred">
+      <div class="pred ko-match-pred">
         ${logo}
-        <div class="team-name">${esc(entrant.teamName || entrant.name)}</div>
         <div class="player-name">${esc(firstNames(entrant.name))}</div>
-        ${guessHtml}
+        <div class="ko-match-picks">${teamChip(homeCode)}${teamChip(awayCode)}</div>
         ${ptsHtml}
       </div>`;
   }
