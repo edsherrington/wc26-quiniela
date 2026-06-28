@@ -132,12 +132,51 @@ body {
 /* ═══════════════════════════════════════
    PLAYER OF THE DAY
 ═══════════════════════════════════════ */
+/* Expandable wrapper for KO round POTD */
+.potd-expandable {
+  border-radius: var(--radius); margin-bottom: 12px;
+  cursor: pointer; user-select: none;
+}
+.potd-expandable .potd {
+  border-radius: var(--radius) var(--radius) 0 0; margin-bottom: 0;
+  transition: border-radius 0.15s;
+}
+.potd-expandable:not(.open) .potd { border-radius: var(--radius); }
+.potd-hint {
+  text-align: center; font-size: 0.65rem; color: var(--ink-muted);
+  padding: 5px 0 6px; letter-spacing: 0.2px;
+  background: var(--surface); border: 1px solid #fcd34d; border-top: none;
+  border-radius: 0 0 var(--radius) var(--radius);
+  transition: opacity 0.15s;
+}
+.potd-expandable.open .potd-hint { display: none; }
+.round-scores {
+  display: none; background: var(--surface);
+  border: 1px solid #fcd34d; border-top: none;
+  border-radius: 0 0 var(--radius) var(--radius);
+  padding: 8px 12px 10px;
+}
+.potd-expandable.open .round-scores { display: block; }
+.round-score-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 5px 4px; border-bottom: 1px solid var(--border);
+  font-size: 0.82rem;
+}
+.round-score-row:last-child { border-bottom: none; }
+.round-score-row.leader { font-weight: 700; }
+.rs-rank { width: 22px; text-align: center; font-size: 0.8rem; flex: none; }
+.rs-name { flex: 1; color: var(--ink); }
+.rs-pts { font-weight: 800; color: var(--navy); font-size: 0.88rem; }
+.round-score-row.leader .rs-pts { color: var(--gold-dark, #b45309); }
+.potd-logo.sm { width: 26px; height: 26px; border-width: 1px; flex: none; }
+
 .potd {
   display: flex; align-items: center; gap: 14px;
   background: var(--surface); border: 1px solid #fcd34d;
   border-left: 4px solid var(--gold); border-radius: var(--radius);
   box-shadow: var(--shadow); padding: 14px; margin-bottom: 12px;
 }
+.potd-expandable .potd { margin-bottom: 0; box-shadow: none; }
 .potd-faces { display: flex; flex: none; }
 .potd-logo {
   width: 52px; height: 52px; border-radius: 50%; object-fit: cover;

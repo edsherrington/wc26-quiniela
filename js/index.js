@@ -177,9 +177,9 @@
         if (ac && picks.has(ac) && roundAdvanced.has(ac)) total += roundPts;
       }
       return { e, total };
-    });
+    }).sort((a, b) => b.total - a.total || (a.e.teamName || a.e.name).localeCompare(b.e.teamName || b.e.name));
 
-    const max = Math.max(...rows.map((r) => r.total));
+    const max = rows[0].total;
     if (max <= 0) return "";
     const winners = rows.filter((r) => r.total === max).map((r) => r.e);
 
@@ -201,15 +201,35 @@
       playerLine = "tied";
     }
 
+    // Round scores leaderboard (shown when card is expanded).
+    let rank = 0, prevTotal = -1;
+    const scoreRows = rows.map(({ e, total }) => {
+      if (total !== prevTotal) { rank++; prevTotal = total; }
+      const logo = e.logo
+        ? `<img class="potd-logo sm" src="${esc(e.logo)}" alt="" />`
+        : `<div class="potd-logo sm"></div>`;
+      const medal = rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : `${rank}.`;
+      return `<div class="round-score-row ${total === max ? "leader" : ""}">
+        <span class="rs-rank">${medal}</span>
+        ${logo}
+        <span class="rs-name">${esc(firstNames(e.name))}</span>
+        <span class="rs-pts">${total > 0 ? "+" : ""}${total}</span>
+      </div>`;
+    }).join("");
+
     return `
-      <div class="potd ${winners.length > 1 ? "tie" : ""}">
-        <div class="potd-faces">${faces}</div>
-        <div class="potd-body">
-          <div class="potd-label">⭐ Player of the Round</div>
-          <div class="potd-team">${teamLine}</div>
-          <div class="potd-player">${playerLine}</div>
+      <div class="potd-expandable ${winners.length > 1 ? "tie" : ""}">
+        <div class="potd">
+          <div class="potd-faces">${faces}</div>
+          <div class="potd-body">
+            <div class="potd-label">⭐ Player of the Round</div>
+            <div class="potd-team">${teamLine}</div>
+            <div class="potd-player">${playerLine}</div>
+          </div>
+          <div class="potd-pts"><span class="n">+${max}</span><span class="l">pts</span></div>
         </div>
-        <div class="potd-pts"><span class="n">+${max}</span><span class="l">pts</span></div>
+        <div class="potd-hint">Tap to see round scores ▾</div>
+        <div class="round-scores">${scoreRows}</div>
       </div>`;
   }
 
@@ -420,6 +440,12 @@
       setTimeout(() => window.EasterEgg.showEnglandDay(day), 800);
     }
   }
+
+  // Tap the POTD card to expand/collapse the round scores table.
+  el.matches.addEventListener("click", (e) => {
+    const potd = e.target.closest(".potd-expandable");
+    if (potd) potd.classList.toggle("open");
+  });
 
   // Tap a match (header or toggle bar) to expand/collapse its predictions.
   el.matches.addEventListener("click", (e) => {
