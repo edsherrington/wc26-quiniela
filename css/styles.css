@@ -291,6 +291,25 @@ body {
 .ko-pick-chip.hit  { background: #dcfce7; color: #15803d; }
 .ko-pick-chip.miss { background: #f1f5f9; color: #94a3b8; text-decoration: line-through; }
 
+/* Inline pick chips inside the guess cell of knockout pred rows */
+.ko-inline-chip {
+  display: inline-flex; align-items: center; gap: 3px;
+  padding: 2px 7px; border-radius: 5px;
+  font-size: 0.7rem; font-weight: 600;
+  background: var(--bg); border: 1px solid var(--border);
+}
+.ko-inline-chip.hit  { background: #dcfce7; color: #15803d; border-color: #bbf7d0; }
+.ko-inline-chip.miss { background: #f1f5f9; color: #94a3b8; text-decoration: line-through; border-color: #e2e8f0; }
+.ko-guess { display: flex; gap: 4px; flex-wrap: wrap; }
+
+/* Cap POTD logos when many co-winners */
+.potd-extra {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--bg); border: 1px solid var(--border);
+  font-size: 0.65rem; font-weight: 700; color: var(--ink-soft);
+  border-radius: 50%; width: 44px; height: 44px;
+}
+
 /* ═══════════════════════════════════════
    EMPTY STATE
 ═══════════════════════════════════════ */

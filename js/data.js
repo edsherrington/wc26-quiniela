@@ -56,13 +56,26 @@
     }).format(new Date());
   }
 
-  // Knockout round keys that have results, in order. E.g. ['KO:R32', 'KO:R16']
+  // Knockout round keys that have at least one fixture scheduled, in order.
   function koRoundKeys(fixtures, results) {
-    if (!results) return [];
+    const kf = fixtures.knockoutFixtures || [];
     return fixtures.knockoutRounds
       .filter((r) => r.id !== "WINNER")
-      .filter((r) => { const a = results.knockout[r.id]; return Array.isArray(a) && a.length > 0; })
+      .filter((r) => kf.some((f) => f.round === r.id))
       .map((r) => "KO:" + r.id);
+  }
+
+  // All knockout fixtures for a specific round, sorted by kickoff.
+  function knockoutFixturesForRound(fixtures, roundId) {
+    return (fixtures.knockoutFixtures || [])
+      .filter((f) => f.round === roundId)
+      .sort((a, b) => (a.kickoff || "").localeCompare(b.kickoff || ""));
+  }
+
+  // Is a knockout match finished?
+  function isKOFinal(kofx, results) {
+    const r = (results.knockoutStage || {})[kofx.id];
+    return !!(r && r[0] != null && r[1] != null);
   }
 
   // All navigable days: group stage dates followed by settled knockout rounds.
@@ -100,5 +113,6 @@
     loadAll, dayKey, kickoffTime, prettyDate, matchDays,
     fixturesOnDay, todayKey, defaultDay, isFinal,
     koRoundKeys, allDays, prettyLabel,
+    knockoutFixturesForRound, isKOFinal,
   };
 })();
