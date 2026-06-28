@@ -21,6 +21,11 @@
 
   const GS_LEGEND = el.legend ? el.legend.innerHTML : "";
 
+  function shortDate(iso) {
+    if (!iso) return "";
+    return new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "Europe/London" });
+  }
+
   function esc(s) {
     return String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   }
@@ -350,7 +355,7 @@
             <span class="nm">${esc(sideName(kofx.away))}</span>
           </div>
         </div>
-        <div class="match-meta">${round ? round.label : kofx.round} · ${esc(kofx.venue || "")}</div>
+        <div class="match-meta">${shortDate(kofx.kickoff)} · ${round ? round.label : kofx.round} · ${esc(kofx.venue || "")}</div>
         <button class="preds-toggle" type="button" aria-expanded="false">
           <span class="lbl">${toggle}</span><span class="chev">▾</span>
         </button>
