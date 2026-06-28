@@ -206,20 +206,33 @@
   }
 
   // Per-entrant row for a knockout match.
-  // Chip = did this player predict this team to be IN this round?
-  // Pts  = correct round predictions × round.points (same logic as scoring.js).
+  // Three chip states per team:
+  //   out      = not in knockout[round]        (didn't predict this team here)
+  //   correct  = in knockout[round]             (predicted here → earns pts)
+  //   rooting  = in knockout[round] AND [next]  (predicted here + going further)
   function koPredRow(entrant, kofx) {
     const homeCode = resolvedCode(kofx.home);
     const awayCode = resolvedCode(kofx.away);
 
-    const roundPicks   = new Set(entrant.knockout[kofx.round] || []);
+    const roundPicks    = new Set(entrant.knockout[kofx.round] || []);
     const roundAdvanced = new Set(results.knockout[kofx.round] || []);
-    const roundPts = koRoundPoints(kofx.round);
+    const roundPts      = koRoundPoints(kofx.round);
+    const nextRound     = KO_NEXT[kofx.round];
+
+    // Next-round picks: used to detect "rooting" state.
+    const nextPicks = !nextRound ? new Set()
+      : nextRound === "WINNER"
+        ? new Set(entrant.knockout.WINNER ? [entrant.knockout.WINNER] : [])
+        : new Set(entrant.knockout[nextRound] || []);
 
     function teamChip(code) {
       if (!code) return "";
-      const picked = roundPicks.has(code);
-      return `<span class="ko-team-chip ${picked ? "correct" : "out"}">${flagFor(code)} ${esc(teamName(code, { short: true }))}${picked ? '<span class="chip-icon">✓</span>' : ""}</span>`;
+      const picked  = roundPicks.has(code);
+      const rooting = picked && nextPicks.has(code);
+      const cls     = !picked ? "out" : rooting ? "rooting" : "correct";
+      const ptsLabel = picked && roundAdvanced.has(code) && roundPts > 0
+        ? `<span class="chip-pts">+${roundPts}</span>` : "";
+      return `<span class="ko-team-chip ${cls}">${flagFor(code)} ${esc(teamName(code, { short: true }))}${ptsLabel}</span>`;
     }
 
     let earnedPts = null;
@@ -352,7 +365,15 @@
       return `<div class="empty"><div class="big">🗓️</div><p>Fixtures not yet scheduled.</p></div>`;
     }
     const potd = koRoundPotdCard(roundId, roundFixtures);
-    return potd + roundFixtures.map(knockoutMatchCard).join("");
+    const pts = koRoundPoints(roundId);
+    const nextRound = KO_NEXT[roundId];
+    const key = `<div class="ko-round-key">
+      <span class="key-label">Key:</span>
+      <span class="ko-team-chip out">not picked</span>
+      <span class="ko-team-chip correct">picked +${pts}</span>
+      ${nextRound ? `<span class="ko-team-chip rooting">+ going further</span>` : ""}
+    </div>`;
+    return potd + key + roundFixtures.map(knockoutMatchCard).join("");
   }
 
   function render() {

@@ -305,10 +305,20 @@ body {
   font-size: 0.7rem; font-weight: 600; white-space: nowrap;
   border: 1px solid transparent;
 }
-/* picked for this round → green tick; not picked → dim */
+/* picked for this round → green +pts; rooting = picked here AND in next round too */
 .ko-team-chip.correct { background: #dcfce7; color: #15803d; border-color: #bbf7d0; }
+.ko-team-chip.rooting { background: #dcfce7; color: #15803d; border: 2px solid #f59e0b; padding: 1px 6px; }
 .ko-team-chip.out     { background: var(--bg); color: var(--ink-muted); border-color: var(--border); opacity: 0.45; }
-.chip-icon { font-size: 0.8em; margin-left: 1px; }
+.chip-pts { font-size: 0.72em; font-weight: 700; margin-left: 2px; opacity: 0.75; }
+
+/* Round-level key legend */
+.ko-round-key {
+  display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  padding: 6px 12px 4px; margin: 0 0 4px;
+  font-size: 0.65rem; color: var(--ink-muted);
+}
+.ko-round-key .key-label { font-weight: 600; margin-right: 2px; }
+.ko-round-key .ko-team-chip { font-size: 0.62rem; padding: 1px 5px; cursor: default; pointer-events: none; }
 
 /* TBD split-flag display before a source match is settled */
 .tbd-flags { font-size: 0.85em; opacity: 0.8; }
