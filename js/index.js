@@ -16,7 +16,10 @@
     prev: document.getElementById("prevDay"),
     next: document.getElementById("nextDay"),
     todayJump: document.getElementById("todayJump"),
+    legend: document.querySelector(".legend"),
   };
+
+  const GS_LEGEND = el.legend ? el.legend.innerHTML : "";
 
   function esc(s) {
     return String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -365,15 +368,7 @@
       return `<div class="empty"><div class="big">🗓️</div><p>Fixtures not yet scheduled.</p></div>`;
     }
     const potd = koRoundPotdCard(roundId, roundFixtures);
-    const pts = koRoundPoints(roundId);
-    const nextRound = KO_NEXT[roundId];
-    const key = `<div class="ko-round-key">
-      <span class="key-label">Key:</span>
-      <span class="ko-team-chip out">not picked</span>
-      <span class="ko-team-chip correct">picked +${pts}</span>
-      ${nextRound ? `<span class="ko-team-chip rooting">+ going further</span>` : ""}
-    </div>`;
-    return potd + key + roundFixtures.map(knockoutMatchCard).join("");
+    return potd + roundFixtures.map(knockoutMatchCard).join("");
   }
 
   function render() {
@@ -384,9 +379,19 @@
 
     if (isKO) {
       el.label.innerHTML = `${WC.prettyLabel(day, fixtures)}<small>Knockout stage</small>`;
+      if (el.legend) {
+        const roundId = day.slice(3);
+        const pts = koRoundPoints(roundId);
+        const nextRound = KO_NEXT[roundId];
+        el.legend.innerHTML =
+          `<span><i style="background:#e2e8f0;border:1px solid #cbd5e1"></i> Not predicted</span>` +
+          `<span><i style="background:#dcfce7;border:1px solid #bbf7d0"></i> Predicted here (+${pts})</span>` +
+          (nextRound ? `<span><i style="background:#dcfce7;border:2px solid #166534"></i> + going further</span>` : "");
+      }
     } else {
       const gIdx = groupDays.indexOf(day);
       el.label.innerHTML = `${WC.prettyLabel(day, fixtures)}<small>Matchday ${gIdx + 1} of ${groupDays.length}</small>`;
+      if (el.legend) el.legend.innerHTML = GS_LEGEND;
     }
     el.todayJump.style.display = day === WC.todayKey() ? "none" : "block";
 
