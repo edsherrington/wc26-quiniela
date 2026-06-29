@@ -213,38 +213,17 @@
       </div>`;
     }).join("");
 
-    // Player standings (group stage points only)
-    const playerRows = predictions.entrants.map((e) => {
-      const s = Scoring.entrantScore(e, fixtures, results);
-      return { e, groupPts: s.group };
-    }).sort((a, b) => b.groupPts - a.groupPts || (a.e.name).localeCompare(b.e.name));
-
-    let rank = 0, prevPts = -1;
-    const playersHtml = playerRows.map(({ e, groupPts }, i) => {
-      if (groupPts !== prevPts) { rank = i + 1; prevPts = groupPts; }
-      const logo = e.logo
-        ? `<img class="potd-logo sm" src="${esc(e.logo)}" alt="" />`
-        : `<div class="potd-logo sm"></div>`;
-      const medal = rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : `${rank}.`;
-      return `<div class="round-score-row ${rank === 1 ? "leader" : ""}">
-        <span class="rs-rank">${medal}</span>
-        ${logo}
-        <span class="rs-name">${esc(firstNames(e.name))}</span>
-        <span class="rs-pts">+${groupPts}</span>
-      </div>`;
-    }).join("");
+    const r32Fixtures = WC.knockoutFixturesForRound(fixtures, "R32");
+    const qualPotd = koRoundPotdCard("R32", r32Fixtures);
 
     return `
       <div class="gs-summary">
         <div class="gs-summary-header">
-          <div class="gs-summary-title">Group Stage Complete</div>
+          <div class="gs-summary-title">Knockout Qualification Summary</div>
           <div class="gs-summary-sub">${r32size} teams qualified for the Round of 32</div>
         </div>
         <div class="gs-groups-grid">${groupsHtml}</div>
-        <div class="gs-standings-section">
-          <div class="gs-standings-title">Group stage scores</div>
-          <div class="gs-standings">${playersHtml}</div>
-        </div>
+        ${qualPotd}
       </div>`;
   }
 
@@ -261,12 +240,18 @@
 
   // Round-level POTD: total pts across all fixtures in the round (same logic as scoring.js).
   function koRoundPotdCard(roundId, roundFixtures) {
-    const roundAdvanced = new Set(results.knockout[roundId] || []);
+    const advArr = roundId === "WINNER"
+      ? (results.knockout.WINNER ? [results.knockout.WINNER] : [])
+      : (results.knockout[roundId] || []);
+    const roundAdvanced = new Set(advArr);
     if (!roundAdvanced.size) return "";
     const roundPts = koRoundPoints(roundId);
 
     const rows = predictions.entrants.map((e) => {
-      const picks = new Set(e.knockout[roundId] || []);
+      const pickArr = roundId === "WINNER"
+        ? (e.knockout.WINNER ? [e.knockout.WINNER] : [])
+        : (e.knockout[roundId] || []);
+      const picks = new Set(pickArr);
       let total = 0;
       for (const kofx of roundFixtures) {
         const hc = WC.resolveTeamCode(kofx.home, fixtures, results);
@@ -491,7 +476,8 @@
     if (!roundFixtures.length) {
       return `<div class="empty"><div class="big">🗓️</div><p>Fixtures not yet scheduled.</p></div>`;
     }
-    const potd = koRoundPotdCard(roundId, roundFixtures);
+    // Show picks for the NEXT round — scores update as this round's matches play out.
+    const potd = koRoundPotdCard(KO_NEXT[roundId], roundFixtures);
     return potd + roundFixtures.map(knockoutMatchCard).join("");
   }
 
