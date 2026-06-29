@@ -485,7 +485,9 @@
 
     if (day === "GS:SUMMARY") {
       el.label.innerHTML = WC.prettyLabel(day, fixtures);
-      if (el.legend) el.legend.innerHTML = GS_LEGEND;
+      if (el.legend) el.legend.innerHTML =
+        `<span><i style="background:#dcfce7;border:1px solid #bbf7d0"></i> Correctly predicted to qualify (+2pts)</span>` +
+        `<span><i style="background:#e2e8f0;border:1px solid #cbd5e1"></i> Not predicted</span>`;
       el.todayJump.style.display = "block";
       el.matches.innerHTML = gsSummaryCard();
       return;
