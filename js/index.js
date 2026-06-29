@@ -313,9 +313,7 @@
 
     const top = settled && matchCodes.length === 2 ? entrants[0] : null;
     const topPts = top ? matchPtsFor(top) : 0;
-    const toggle = settled && topPts > 0
-      ? `⭐ ${esc(firstNames(top.name))} +${topPts} · see all`
-      : "See picks";
+    const toggle = "See predictions";
 
     return `
       <div class="match">
