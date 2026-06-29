@@ -363,7 +363,7 @@
         el.legend.innerHTML =
           `<span><i style="background:#e2e8f0;border:1px solid #cbd5e1"></i> Not predicted</span>` +
           `<span><i style="background:#dcfce7;border:1px solid #bbf7d0"></i> Predicted here (+${pts})</span>` +
-          (nextRound ? `<span><i style="background:#dcfce7;border:2px solid #166534"></i> Predicted next round</span>` : "");
+          (nextRound ? `<span><i style="background:#dcfce7;border:2px solid #166534"></i> Predicted next round (+${koRoundPoints(nextRound)})</span>` : "");
       }
     } else {
       const gIdx = groupDays.indexOf(day);
