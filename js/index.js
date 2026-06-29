@@ -222,8 +222,8 @@
           <div class="gs-summary-title">Knockout Qualification Summary</div>
           <div class="gs-summary-sub">${r32size} teams qualified for the Round of 32</div>
         </div>
-        <div class="gs-groups-grid">${groupsHtml}</div>
         ${qualPotd}
+        <div class="gs-groups-grid">${groupsHtml}</div>
       </div>`;
   }
 
