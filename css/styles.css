@@ -199,6 +199,54 @@ body {
 .potd-pts .l { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.8px; color: var(--ink-soft); }
 
 /* ═══════════════════════════════════════
+   GROUP STAGE SUMMARY
+═══════════════════════════════════════ */
+.gs-summary { padding-bottom: 8px; }
+.gs-summary-header {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); box-shadow: var(--shadow);
+  padding: 16px; margin-bottom: 14px; text-align: center;
+}
+.gs-summary-title { font-size: 1.1rem; font-weight: 800; color: var(--navy); }
+.gs-summary-sub { font-size: 0.78rem; color: var(--ink-soft); margin-top: 3px; }
+
+.gs-groups-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px;
+}
+.gs-group-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+}
+.gs-group-header {
+  background: var(--navy); color: #fff;
+  font-size: 0.65rem; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 0.8px; padding: 5px 10px;
+}
+.gs-team-row {
+  display: flex; align-items: center; gap: 5px;
+  padding: 5px 8px; border-bottom: 1px solid var(--border); font-size: 0.72rem;
+}
+.gs-team-row:last-child { border-bottom: none; }
+.gs-team-row.eliminated { opacity: 0.38; }
+.gs-pos { width: 22px; font-size: 0.6rem; color: var(--ink-muted); font-weight: 600; flex: none; }
+.gs-flag { font-size: 1rem; line-height: 1; flex: none; }
+.gs-name { flex: 1; font-weight: 600; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gs-pts-badge { font-size: 0.6rem; color: var(--ink-muted); flex: none; }
+.gs-q  { color: #16a34a; font-size: 0.75rem; font-weight: 800; flex: none; }
+.gs-out{ color: var(--ink-muted); font-size: 0.7rem; flex: none; opacity: 0.5; }
+
+.gs-standings-section {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+}
+.gs-standings-title {
+  font-size: 0.65rem; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 0.8px; color: var(--ink-soft);
+  padding: 10px 14px 6px; border-bottom: 1px solid var(--border);
+}
+.gs-standings { padding: 4px 10px 6px; }
+
+/* ═══════════════════════════════════════
    MATCH CARD
 ═══════════════════════════════════════ */
 .match {

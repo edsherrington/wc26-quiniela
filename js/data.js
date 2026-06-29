@@ -93,13 +93,25 @@
     return score[0] >= score[1] ? homeCode : awayCode;
   }
 
-  // All navigable days: group stage dates followed by settled knockout rounds.
-  function allDays(fixtures, results) {
-    return [...matchDays(fixtures), ...koRoundKeys(fixtures, results)];
+  // Is the group stage fully complete (all fixtures have results)?
+  function isGroupStageComplete(fixtures, results) {
+    return fixtures.groupStage.every((fx) => {
+      const r = results.groupStage[fx.id];
+      return r && r[0] != null && r[1] != null;
+    });
   }
 
-  // Human-readable label for a day key (date string or KO:round).
+  // All navigable days: group stage dates, then GS:SUMMARY (once GS is done), then KO rounds.
+  function allDays(fixtures, results) {
+    const gs = matchDays(fixtures);
+    const ko = koRoundKeys(fixtures, results);
+    const summary = isGroupStageComplete(fixtures, results) ? ["GS:SUMMARY"] : [];
+    return [...gs, ...summary, ...ko];
+  }
+
+  // Human-readable label for a day key (date string, GS:SUMMARY, or KO:round).
   function prettyLabel(dayKey, fixtures) {
+    if (dayKey === "GS:SUMMARY") return "Group Stage";
     if (!dayKey || !dayKey.startsWith("KO:")) return prettyDate(dayKey);
     const rid = dayKey.slice(3);
     const round = (fixtures.knockoutRounds || []).find((r) => r.id === rid);
@@ -138,7 +150,7 @@
   window.WC = {
     loadAll, dayKey, kickoffTime, prettyDate, matchDays,
     fixturesOnDay, todayKey, defaultDay, isFinal,
-    koRoundKeys, allDays, prettyLabel,
+    koRoundKeys, allDays, prettyLabel, isGroupStageComplete,
     knockoutFixturesForRound, isKOFinal, resolveTeamCode,
   };
 })();
