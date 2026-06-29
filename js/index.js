@@ -218,10 +218,6 @@
 
     return `
       <div class="gs-summary">
-        <div class="gs-summary-header">
-          <div class="gs-summary-title">Knockout Qualification Summary</div>
-          <div class="gs-summary-sub">${r32size} teams qualified for the Round of 32</div>
-        </div>
         ${qualPotd}
         <div class="gs-groups-grid">${groupsHtml}</div>
       </div>`;
@@ -488,7 +484,7 @@
     el.next.disabled = idx >= days.length - 1;
 
     if (day === "GS:SUMMARY") {
-      el.label.innerHTML = `${WC.prettyLabel(day, fixtures)}<small>Summary</small>`;
+      el.label.innerHTML = WC.prettyLabel(day, fixtures);
       if (el.legend) el.legend.innerHTML = GS_LEGEND;
       el.todayJump.style.display = "block";
       el.matches.innerHTML = gsSummaryCard();

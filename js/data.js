@@ -111,7 +111,7 @@
 
   // Human-readable label for a day key (date string, GS:SUMMARY, or KO:round).
   function prettyLabel(dayKey, fixtures) {
-    if (dayKey === "GS:SUMMARY") return "Group Stage";
+    if (dayKey === "GS:SUMMARY") return "Knockout Qualification Summary";
     if (!dayKey || !dayKey.startsWith("KO:")) return prettyDate(dayKey);
     const rid = dayKey.slice(3);
     const round = (fixtures.knockoutRounds || []).find((r) => r.id === rid);
