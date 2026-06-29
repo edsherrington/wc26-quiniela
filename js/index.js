@@ -152,80 +152,9 @@
       </div>`;
   }
 
-  // ─── Group Stage Summary ────────────────────────────────────────────────────
-
-  function computeGroupStandings() {
-    const groups = {};
-    for (const fx of fixtures.groupStage) {
-      const g = fx.group;
-      if (!groups[g]) groups[g] = {};
-      for (const side of [fx.home, fx.away]) {
-        if (!groups[g][side.code]) {
-          groups[g][side.code] = { code: side.code, name: side.name, pts: 0, gd: 0, gf: 0, w: 0, d: 0, l: 0 };
-        }
-      }
-      const score = results.groupStage[fx.id];
-      if (!score || score[0] == null) continue;
-      const [hg, ag] = score;
-      const home = groups[g][fx.home.code];
-      const away = groups[g][fx.away.code];
-      home.gf += hg; home.gd += (hg - ag);
-      away.gf += ag; away.gd += (ag - hg);
-      if (hg > ag)      { home.pts += 3; home.w++; away.l++; }
-      else if (hg === ag){ home.pts += 1; away.pts += 1; home.d++; away.d++; }
-      else               { away.pts += 3; away.w++; home.l++; }
-    }
-    const r32 = new Set(results.knockout.R32 || []);
-    const result = {};
-    for (const [g, teams] of Object.entries(groups)) {
-      const sorted = Object.values(teams).sort((a, b) =>
-        b.pts - a.pts || b.gd - a.gd || b.gf - a.gf || a.code.localeCompare(b.code));
-      sorted.forEach((t, i) => { t.position = i + 1; t.qualified = r32.has(t.code); });
-      result[g] = sorted;
-    }
-    return result;
-  }
-
-  function gsSummaryCard() {
-    const standings = computeGroupStandings();
-    const r32size = (results.knockout.R32 || []).length;
-
-    // Groups grid
-    const groupOrder = Object.keys(standings).sort();
-    const groupsHtml = groupOrder.map((g) => {
-      const teams = standings[g];
-      const rows = teams.map((t) => {
-        const logo = t.logo
-          ? `<img class="gs-team-logo" src="${esc(t.logo)}" alt="" />`
-          : `<span class="gs-team-flag">${flagFor(t.code)}</span>`;
-        const posLabel = t.position === 1 ? "1st" : t.position === 2 ? "2nd" : t.position === 3 ? "3rd" : "4th";
-        return `<div class="gs-team-row ${t.qualified ? "qualified" : "eliminated"}">
-          <span class="gs-pos">${posLabel}</span>
-          <span class="gs-flag">${flagFor(t.code)}</span>
-          <span class="gs-name">${esc(teamName(t.code, { short: true }))}</span>
-          <span class="gs-pts-badge">${t.pts}pt</span>
-          ${t.qualified ? '<span class="gs-q">✓</span>' : '<span class="gs-out">✗</span>'}
-        </div>`;
-      }).join("");
-      return `<div class="gs-group-card">
-        <div class="gs-group-header">Group ${esc(g)}</div>
-        ${rows}
-      </div>`;
-    }).join("");
-
-    const r32Fixtures = WC.knockoutFixturesForRound(fixtures, "R32");
-    const qualPotd = koRoundPotdCard("R32", r32Fixtures);
-
-    return `
-      <div class="gs-summary">
-        ${qualPotd}
-        <div class="gs-groups-grid">${groupsHtml}</div>
-      </div>`;
-  }
-
   // ─── Knockout stage ─────────────────────────────────────────────────────────
 
-  // Next round id for a given knockout round (used to determine who "won" a match).
+  // Next round id for a given knockout round.
   const KO_NEXT = { R32: "R16", R16: "QF", QF: "SF", SF: "F", F: "WINNER" };
 
   // Points per correct pick for a given round id.
@@ -234,83 +163,6 @@
     return r ? r.points : 0;
   }
 
-  // Round-level POTD: total pts across all fixtures in the round (same logic as scoring.js).
-  function koRoundPotdCard(roundId, roundFixtures) {
-    const advArr = roundId === "WINNER"
-      ? (results.knockout.WINNER ? [results.knockout.WINNER] : [])
-      : (results.knockout[roundId] || []);
-    const roundAdvanced = new Set(advArr);
-    if (!roundAdvanced.size) return "";
-    const roundPts = koRoundPoints(roundId);
-
-    const rows = predictions.entrants.map((e) => {
-      const pickArr = roundId === "WINNER"
-        ? (e.knockout.WINNER ? [e.knockout.WINNER] : [])
-        : (e.knockout[roundId] || []);
-      const picks = new Set(pickArr);
-      let total = 0;
-      for (const kofx of roundFixtures) {
-        const hc = WC.resolveTeamCode(kofx.home, fixtures, results);
-        const ac = WC.resolveTeamCode(kofx.away, fixtures, results);
-        if (hc && picks.has(hc) && roundAdvanced.has(hc)) total += roundPts;
-        if (ac && picks.has(ac) && roundAdvanced.has(ac)) total += roundPts;
-      }
-      return { e, total };
-    }).sort((a, b) => b.total - a.total || (a.e.teamName || a.e.name).localeCompare(b.e.teamName || b.e.name));
-
-    const max = rows[0].total;
-    if (max <= 0) return "";
-    const winners = rows.filter((r) => r.total === max).map((r) => r.e);
-
-    const MAX_LOGOS = 4;
-    const shown = winners.slice(0, MAX_LOGOS);
-    const extra = winners.length - shown.length;
-    const faces = shown.map((w) =>
-      w.logo
-        ? `<img class="potd-logo" src="${esc(w.logo)}" alt="" data-name="${esc(w.teamName || w.name)}" />`
-        : `<div class="potd-logo"></div>`
-    ).join("") + (extra > 0 ? `<div class="potd-logo potd-extra">+${extra}</div>` : "");
-
-    let teamLine, playerLine;
-    if (winners.length === 1) {
-      teamLine = esc(winners[0].teamName || winners[0].name);
-      playerLine = esc(firstNames(winners[0].name));
-    } else {
-      teamLine = shown.map((w) => esc(firstNames(w.name))).join(", ") + (extra > 0 ? ` +${extra}` : "");
-      playerLine = "tied";
-    }
-
-    // Round scores leaderboard (shown when card is expanded).
-    let rank = 0, prevTotal = -1;
-    const scoreRows = rows.map(({ e, total }) => {
-      if (total !== prevTotal) { rank++; prevTotal = total; }
-      const logo = e.logo
-        ? `<img class="potd-logo sm" src="${esc(e.logo)}" alt="" />`
-        : `<div class="potd-logo sm"></div>`;
-      const medal = rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : `${rank}.`;
-      return `<div class="round-score-row ${total === max ? "leader" : ""}">
-        <span class="rs-rank">${medal}</span>
-        ${logo}
-        <span class="rs-name">${esc(firstNames(e.name))}</span>
-        <span class="rs-pts">${total > 0 ? "+" : ""}${total}</span>
-      </div>`;
-    }).join("");
-
-    return `
-      <div class="potd-expandable ${winners.length > 1 ? "tie" : ""}">
-        <div class="potd">
-          <div class="potd-faces">${faces}</div>
-          <div class="potd-body">
-            <div class="potd-label">🏆 Round Leader</div>
-            <div class="potd-team">${teamLine}</div>
-            <div class="potd-player">${playerLine}</div>
-          </div>
-          <div class="potd-pts"><span class="n">+${max}</span><span class="l">pts</span></div>
-        </div>
-        <div class="potd-hint">Tap to see round scores ▾</div>
-        <div class="round-scores">${scoreRows}</div>
-      </div>`;
-  }
 
   // Per-entrant row for a knockout match.
   // Three chip states per team:
@@ -326,11 +178,16 @@
     const roundPts      = koRoundPoints(kofx.round);
     const nextRound     = KO_NEXT[kofx.round];
 
-    // Next-round picks: used to detect "rooting" state.
+    // Next-round picks: "rooting" chip state + scoring as matches play out.
     const nextPicks = !nextRound ? new Set()
       : nextRound === "WINNER"
         ? new Set(entrant.knockout.WINNER ? [entrant.knockout.WINNER] : [])
         : new Set(entrant.knockout[nextRound] || []);
+    const nextAdvanced = !nextRound ? new Set()
+      : nextRound === "WINNER"
+        ? new Set(results.knockout.WINNER ? [results.knockout.WINNER] : [])
+        : new Set(results.knockout[nextRound] || []);
+    const nextPts = nextRound ? koRoundPoints(nextRound) : 0;
 
     function teamChip(code) {
       if (!code) return "";
@@ -347,6 +204,11 @@
       earnedPts = 0;
       if (homeCode && roundPicks.has(homeCode) && roundAdvanced.has(homeCode)) earnedPts += roundPts;
       if (awayCode && roundPicks.has(awayCode) && roundAdvanced.has(awayCode)) earnedPts += roundPts;
+      // Add next-round advancement pts as this round's matches are played.
+      if (nextAdvanced.size > 0) {
+        if (homeCode && nextPicks.has(homeCode) && nextAdvanced.has(homeCode)) earnedPts += nextPts;
+        if (awayCode && nextPicks.has(awayCode) && nextAdvanced.has(awayCode)) earnedPts += nextPts;
+      }
     }
 
     const ptsHtml = earnedPts != null
@@ -422,11 +284,24 @@
     const matchCodes = [homeCode, awayCode].filter(Boolean);
     const roundAdvanced = new Set(results.knockout[kofx.round] || []);
     const roundPts = koRoundPoints(kofx.round);
+    const nextAdvanced = !nextRound ? new Set()
+      : nextRound === "WINNER"
+        ? new Set(results.knockout.WINNER ? [results.knockout.WINNER] : [])
+        : new Set(results.knockout[nextRound] || []);
+    const nextPts = nextRound ? koRoundPoints(nextRound) : 0;
     const settled = roundAdvanced.size > 0;
 
     const matchPtsFor = (e) => {
       const picks = new Set(e.knockout[kofx.round] || []);
-      return matchCodes.filter((c) => picks.has(c) && roundAdvanced.has(c)).length * roundPts;
+      const nPickArr = !nextRound ? []
+        : nextRound === "WINNER" ? (e.knockout.WINNER ? [e.knockout.WINNER] : [])
+        : (e.knockout[nextRound] || []);
+      const nPicks = new Set(nPickArr);
+      let pts = matchCodes.filter((c) => picks.has(c) && roundAdvanced.has(c)).length * roundPts;
+      if (nextAdvanced.size > 0) {
+        pts += matchCodes.filter((c) => nPicks.has(c) && nextAdvanced.has(c)).length * nextPts;
+      }
+      return pts;
     };
 
     let entrants = predictions.entrants.slice();
@@ -472,9 +347,7 @@
     if (!roundFixtures.length) {
       return `<div class="empty"><div class="big">🗓️</div><p>Fixtures not yet scheduled.</p></div>`;
     }
-    // Show picks for the NEXT round — scores update as this round's matches play out.
-    const potd = koRoundPotdCard(KO_NEXT[roundId], roundFixtures);
-    return potd + roundFixtures.map(knockoutMatchCard).join("");
+    return roundFixtures.map(knockoutMatchCard).join("");
   }
 
   function render() {
@@ -482,16 +355,6 @@
     const idx = days.indexOf(day);
     el.prev.disabled = idx <= 0;
     el.next.disabled = idx >= days.length - 1;
-
-    if (day === "GS:SUMMARY") {
-      el.label.innerHTML = WC.prettyLabel(day, fixtures);
-      if (el.legend) el.legend.innerHTML =
-        `<span><i style="background:#dcfce7;border:1px solid #bbf7d0"></i> Correctly predicted to qualify (+2pts)</span>` +
-        `<span><i style="background:#e2e8f0;border:1px solid #cbd5e1"></i> Not predicted</span>`;
-      el.todayJump.style.display = "block";
-      el.matches.innerHTML = gsSummaryCard();
-      return;
-    }
 
     if (isKO) {
       el.label.innerHTML = `${WC.prettyLabel(day, fixtures)}<small>Knockout stage</small>`;
