@@ -126,10 +126,9 @@
     for (const koDay of koDays) {
       const roundId = koDay.slice(3);
       const roundFx = kf.filter((f) => f.round === roundId);
-      const allDone = roundFx.length > 0 && roundFx.every((f) => {
-        const r = ks[f.id]; return r && r[0] != null && r[1] != null;
-      });
-      if (!allDone) return koDay;
+      // Skip rounds that have already started (any result settled) — show the next one.
+    const hasAnyResult = roundFx.some((f) => { const r = ks[f.id]; return r && r[0] != null; });
+      if (!hasAnyResult) return koDay;
     }
     return koDays[koDays.length - 1];
   }
