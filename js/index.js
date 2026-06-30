@@ -426,7 +426,9 @@
       el.label.innerHTML = `${WC.prettyLabel(day, fixtures)}<small>Matchday ${gIdx + 1} of ${groupDays.length}</small>`;
       if (el.legend) el.legend.innerHTML = GS_LEGEND;
     }
-    el.todayJump.style.display = day === WC.todayKey() ? "none" : "block";
+    el.todayJump.textContent = isKO ? "Jump to latest" : "Jump to today";
+    const atDefault = isKO ? day === WC.defaultDay(fixtures, results) : day === WC.todayKey();
+    el.todayJump.style.display = atDefault ? "none" : "block";
 
     if (isKO) {
       el.matches.innerHTML = knockoutCard(day);
