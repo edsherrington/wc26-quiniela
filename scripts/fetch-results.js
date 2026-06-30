@@ -35,15 +35,20 @@ function roundIdFromStage(stage) {
 }
 
 // Walk the static bracket to resolve a side's team code from knockoutStage scores.
-function resolveTeamCode(side, fixtures, scores, depth) {
+// pens = knockoutPens map (optional) — used to pick the correct winner when AET ends level.
+function resolveTeamCode(side, fixtures, scores, pens, depth) {
   if (side.code) return side.code;
   if (!side.sourceMatch || (depth || 0) > 5) return null;
   const src = (fixtures.knockoutFixtures || []).find((f) => f.id === side.sourceMatch);
   if (!src) return null;
   const score = scores[src.id];
   if (!score || score[0] == null) return null;
-  const h = resolveTeamCode(src.home, fixtures, scores, (depth || 0) + 1);
-  const a = resolveTeamCode(src.away, fixtures, scores, (depth || 0) + 1);
+  const h = resolveTeamCode(src.home, fixtures, scores, pens, (depth || 0) + 1);
+  const a = resolveTeamCode(src.away, fixtures, scores, pens, (depth || 0) + 1);
+  if (score[0] === score[1] && pens) {
+    const p = pens[src.id];
+    if (p) return p[0] > p[1] ? h : a;
+  }
   return score[0] >= score[1] ? h : a;
 }
 
@@ -106,7 +111,10 @@ async function main() {
   const matches = data.matches || [];
   console.log(`  ${matches.length} matches returned.`);
 
-  const base    = { groupStage: {}, knockoutStage: {}, knockout: { R32: [], R16: [], QF: [], SF: [], F: [], WINNER: null } };
+  const base    = { groupStage: {}, knockoutStage: {}, knockoutPens: {}, knockout: { R32: [], R16: [], QF: [], SF: [], F: [], WINNER: null } };
+  // penWinners: fixtureId -> winning team code, populated during match processing,
+  // used in the advancement loop so draws (penalty matches) pick the correct team.
+  const penWinners = {};
   const unmatched = [];
 
   // Build kickoff-time lookup for static KO fixtures (ms since epoch → fixture id).
@@ -141,8 +149,28 @@ async function main() {
 
     if (koRound) {
       if (!finished) continue;
-      const gh = m.score?.fullTime?.home;
-      const ga = m.score?.fullTime?.away;
+
+      // For penalty shootouts the API stores the cumulative (AET + penalty goals) total in
+      // score.fullTime. Use score.extraTime for the actual goals-in-play tally, and capture
+      // the penalty count separately so the UI can display "Paraguay win 5-4 on pens".
+      const isPen = m.score?.duration === "PENALTY_SHOOTOUT";
+      const penScore = m.score?.penalties;
+      const extTime  = m.score?.extraTime;
+      let gh, ga;
+      if (isPen && penScore && penScore.home != null && penScore.away != null) {
+        if (extTime && extTime.home != null && extTime.away != null) {
+          // extraTime = score at the end of ET (before penalties) — this is what we display.
+          gh = extTime.home;
+          ga = extTime.away;
+        } else {
+          // Fallback: subtract penalty goals from the inflated fullTime total.
+          gh = (m.score?.fullTime?.home ?? 0) - penScore.home;
+          ga = (m.score?.fullTime?.away ?? 0) - penScore.away;
+        }
+      } else {
+        gh = m.score?.fullTime?.home;
+        ga = m.score?.fullTime?.away;
+      }
       if (gh == null || ga == null) continue;
 
       // Match to our static fixture: try kickoff timestamp first, fall back to team codes.
@@ -157,9 +185,19 @@ async function main() {
       if (fixtureId) {
         // Store score in the right home/away orientation for our static fixture.
         const kofx = fixtures.knockoutFixtures.find((f) => f.id === fixtureId);
-        const staticHome = resolveTeamCode(kofx.home, fixtures, base.knockoutStage);
+        const staticHome = resolveTeamCode(kofx.home, fixtures, base.knockoutStage, base.knockoutPens);
         const homeIsHome = staticHome === homeCode || staticHome === null;
         base.knockoutStage[fixtureId] = homeIsHome ? [gh, ga] : [ga, gh];
+
+        if (isPen && penScore && penScore.home != null) {
+          const ph = homeIsHome ? penScore.home : penScore.away;
+          const pa = homeIsHome ? penScore.away : penScore.home;
+          base.knockoutPens[fixtureId] = [ph, pa];
+          // Track the winner by team code so the advancement loop can pick correctly.
+          const w = m.score?.winner;
+          if (w === "HOME_TEAM") penWinners[fixtureId] = homeIsHome ? homeCode : awayCode;
+          else if (w === "AWAY_TEAM") penWinners[fixtureId] = homeIsHome ? awayCode : homeCode;
+        }
       } else {
         console.log(`  ! KO result not matched to fixture: ${m.homeTeam.name} v ${m.awayTeam.name} ${m.utcDate}`);
       }
@@ -191,13 +229,14 @@ async function main() {
     if (kofx.away.code) koSets.R32.add(kofx.away.code);
   }
   // Advancement: winner of each match reaches the next round.
+  // Use penWinners for penalty matches (score is level at AET).
   const roundNext = { R32: "R16", R16: "QF", QF: "SF", SF: "F" };
   for (const kofx of (fixtures.knockoutFixtures || [])) {
     const score = base.knockoutStage[kofx.id];
     if (!score) continue;
-    const h = resolveTeamCode(kofx.home, fixtures, base.knockoutStage);
-    const a = resolveTeamCode(kofx.away, fixtures, base.knockoutStage);
-    const winner = score[0] >= score[1] ? h : a;
+    const h = resolveTeamCode(kofx.home, fixtures, base.knockoutStage, base.knockoutPens);
+    const a = resolveTeamCode(kofx.away, fixtures, base.knockoutStage, base.knockoutPens);
+    const winner = penWinners[kofx.id] || (score[0] >= score[1] ? h : a);
     const next = roundNext[kofx.round];
     if (next && winner) koSets[next].add(winner);
   }

@@ -90,6 +90,10 @@
     if (!score || score[0] == null) return null;
     const homeCode = resolveTeamCode(src.home, fixtures, results, (_depth || 0) + 1);
     const awayCode = resolveTeamCode(src.away, fixtures, results, (_depth || 0) + 1);
+    if (score[0] === score[1]) {
+      const pens = (results.knockoutPens || {})[src.id];
+      if (pens) return pens[0] > pens[1] ? homeCode : awayCode;
+    }
     return score[0] >= score[1] ? homeCode : awayCode;
   }
 

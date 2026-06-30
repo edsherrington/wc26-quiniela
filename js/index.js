@@ -277,8 +277,17 @@
     const nextRound = KO_NEXT[kofx.round];
 
     const dateLabel = kofx.kickoff ? `<div class="fixture-date">${shortDate(kofx.kickoff)}</div>` : "";
+    const penData = (results.knockoutPens || {})[kofx.id];
+    let penLine = "";
+    if (final && penData) {
+      const homeWins = penData[0] > penData[1];
+      const winScore = homeWins ? penData[0] : penData[1];
+      const loseScore = homeWins ? penData[1] : penData[0];
+      const winName = esc(sideName(homeWins ? kofx.home : kofx.away));
+      penLine = `<div class="pen-result">${winName} win ${winScore}–${loseScore} on pens</div>`;
+    }
     const scoreBlock = final
-      ? `${dateLabel}<div class="big">${actual[0]} – ${actual[1]}</div><span class="status ft">Full time</span>`
+      ? `${dateLabel}<div class="big">${actual[0]} – ${actual[1]}</div><span class="status ft">Full time</span>${penLine}`
       : `${dateLabel}<div class="big">${WC.kickoffTime(kofx.kickoff) || "TBC"}</div><span class="status upcoming">Kick-off <small class="tz-note">BST</small></span>`;
 
     const matchCodes = [homeCode, awayCode].filter(Boolean);
