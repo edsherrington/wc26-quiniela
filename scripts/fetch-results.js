@@ -115,6 +115,15 @@ async function main() {
     if (kofx.kickoff) koKickoffMap[new Date(kofx.kickoff).getTime()] = kofx.id;
   }
 
+  // Fallback: team-code pair lookup for R32 fixtures (codes are known at draw time).
+  const koTeamPairMap = {};
+  for (const kofx of (fixtures.knockoutFixtures || []).filter(f => f.round === "R32")) {
+    if (kofx.home.code && kofx.away.code) {
+      const key = [kofx.home.code, kofx.away.code].sort().join("|");
+      koTeamPairMap[key] = kofx.id;
+    }
+  }
+
   // Process all matches sorted by date so earlier results are available when resolving later ones.
   matches.sort((a, b) => (a.utcDate || "").localeCompare(b.utcDate || ""));
 
@@ -136,9 +145,14 @@ async function main() {
       const ga = m.score?.fullTime?.away;
       if (gh == null || ga == null) continue;
 
-      // Match to our static fixture by kickoff time.
+      // Match to our static fixture: try kickoff timestamp first, fall back to team codes.
       const kickoffMs = m.utcDate ? new Date(m.utcDate).getTime() : null;
-      const fixtureId = kickoffMs ? koKickoffMap[kickoffMs] : null;
+      let fixtureId = kickoffMs ? koKickoffMap[kickoffMs] : null;
+      if (!fixtureId && homeCode && awayCode) {
+        const pairKey = [homeCode, awayCode].sort().join("|");
+        fixtureId = koTeamPairMap[pairKey] || null;
+        if (fixtureId) console.log(`  ~ KO matched by team codes (timestamp mismatch): ${m.homeTeam.name} v ${m.awayTeam.name} ${m.utcDate}`);
+      }
 
       if (fixtureId) {
         // Store score in the right home/away orientation for our static fixture.
