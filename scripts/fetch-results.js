@@ -143,12 +143,18 @@ async function main() {
     const finished = m.status === "FINISHED";
 
     if (!homeCode || !awayCode) {
+      if (koRound) {
+        console.log(`  ! KO code lookup failed: ${m.homeTeam.name}(tla=${m.homeTeam.tla}) v ${m.awayTeam.name}(tla=${m.awayTeam.tla}) [${stage}]`);
+      }
       unmatched.push(`${m.homeTeam.name} v ${m.awayTeam.name} (${stage})`);
       continue;
     }
 
     if (koRound) {
-      if (!finished) continue;
+      if (!finished) {
+        console.log(`  ~ KO not finished: ${m.homeTeam.name} v ${m.awayTeam.name} (${m.status}) ${m.utcDate}`);
+        continue;
+      }
 
       // For penalty shootouts the API stores the cumulative (AET + penalty goals) total in
       // score.fullTime. Use score.extraTime for the actual goals-in-play tally, and capture
