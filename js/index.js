@@ -187,7 +187,7 @@
       const cls    = picked ? "correct" : "out";
       const ptsLabel = picked && roundAdvanced.has(code) && roundPts > 0
         ? `<span class="chip-pts">+${roundPts}</span>` : "";
-      return `<span class="ko-team-chip ${cls}">${flagFor(code)} ${esc(teamName(code, { short: true }))}${ptsLabel}</span>`;
+      return `<span class="ko-team-chip ${cls}">${flagFor(code)} ${esc(code)}${ptsLabel}</span>`;
     }
 
     let earnedPts = null;
@@ -217,8 +217,8 @@
         const hasAway = nxtPicks.has(awayCode);
         const verb = nextRound === "WINNER" ? "to win it" : "to progress";
         if (hasHome && hasAway) progressLine = `Has both ${verb}`;
-        else if (hasHome)       progressLine = `Has ${teamName(homeCode, { short: true })} ${verb}`;
-        else if (hasAway)       progressLine = `Has ${teamName(awayCode, { short: true })} ${verb}`;
+        else if (hasHome)       progressLine = `Has ${homeCode} ${verb}`;
+        else if (hasAway)       progressLine = `Has ${awayCode} ${verb}`;
         else                    progressLine = `Has neither ${verb}`;
       }
     }
@@ -318,15 +318,13 @@
 
   function sideName(side) {
     const code = resolvedCode(side);
-    if (code) return teamName(code, { short: true });
+    if (code) return code;
     if (side.sourceMatch) {
       const src = (fixtures.knockoutFixtures || []).find((f) => f.id === side.sourceMatch);
       if (src) {
         const h = resolvedCode(src.home);
         const a = resolvedCode(src.away);
-        const hn = h ? teamName(h, { short: true }) : (src.home.name || "?");
-        const an = a ? teamName(a, { short: true }) : (src.away.name || "?");
-        return `${hn} / ${an}`;
+        return `${h || src.home.name || "?"} / ${a || src.away.name || "?"}`;
       }
     }
     return side.name || "TBD";
