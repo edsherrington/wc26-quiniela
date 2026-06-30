@@ -225,17 +225,16 @@
     const leaders = ranked.filter((e) => roundTotalFor(e, roundId) === topPts);
     const isTie = leaders.length > 1;
 
-    const leaderFaces = leaders.map((l) =>
+    const MAX_FACES = 3;
+    const facesToShow = leaders.slice(0, MAX_FACES);
+    const extraCount  = leaders.length - MAX_FACES;
+    const leaderFaces = facesToShow.map((l) =>
       l.logo ? `<img class="potd-logo" src="${esc(l.logo)}" alt="" data-name="${esc(l.teamName || l.name)}" />`
              : `<div class="potd-logo"></div>`
-    ).join("");
+    ).join("") + (extraCount > 0 ? `<span class="potd-extra">+${extraCount}</span>` : "");
 
-    const nameLabel = isTie
-      ? leaders.map((l) => esc(firstNames(l.name))).join(" & ")
-      : esc(firstNames(leaders[0].name));
-    const teamLabel = isTie
-      ? leaders.map((l) => esc(l.teamName || l.name)).join(" & ")
-      : esc(leaders[0].teamName || leaders[0].name);
+    const nameLabel = isTie ? `${leaders.length} tied` : esc(firstNames(leaders[0].name));
+    const teamLabel = isTie ? "Multiple leaders" : esc(leaders[0].teamName || leaders[0].name);
 
     const tableRows = ranked.map((e, i) => {
       const pts = roundTotalFor(e, roundId);

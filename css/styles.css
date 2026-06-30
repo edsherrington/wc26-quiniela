@@ -143,7 +143,7 @@ body {
 }
 .potd-expandable:not(.open) .potd { border-radius: var(--radius); }
 .potd-hint {
-  text-align: center; font-size: 0.65rem; color: var(--ink-muted);
+  margin: 0; text-align: center; font-size: 0.65rem; color: var(--ink-muted);
   padding: 5px 0 6px; letter-spacing: 0.2px;
   background: var(--surface); border: 1px solid #fcd34d; border-top: none;
   border-radius: 0 0 var(--radius) var(--radius);
