@@ -165,8 +165,10 @@ body {
 .round-score-row:last-child { border-bottom: none; }
 .round-score-row.leader { font-weight: 700; }
 .rs-rank { width: 22px; text-align: center; font-size: 0.8rem; flex: none; }
-.rs-name { flex: 1; color: var(--ink); }
-.rs-pts { font-weight: 800; color: var(--navy); font-size: 0.88rem; }
+.rs-who  { flex: 1; min-width: 0; }
+.rs-team { display: block; font-weight: 700; font-size: 0.82rem; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rs-player { display: block; font-size: 0.7rem; color: var(--ink-soft); margin-top: 1px; }
+.rs-pts { font-weight: 800; color: var(--navy); font-size: 0.88rem; flex: none; }
 .round-score-row.leader .rs-pts { color: var(--gold-dark, #b45309); }
 .potd-logo.sm { width: 26px; height: 26px; border-width: 1px; flex: none; }
 

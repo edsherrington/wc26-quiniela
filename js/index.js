@@ -245,7 +245,10 @@
       return `<div class="round-score-row${isLeader ? " leader" : ""}">
         <span class="rs-rank">${i + 1}</span>
         ${logoEl}
-        <span class="rs-name">${esc(firstNames(e.name))}</span>
+        <span class="rs-who">
+          <span class="rs-team">${esc(e.teamName || e.name)}</span>
+          <span class="rs-player">${esc(firstNames(e.name))}</span>
+        </span>
         <span class="rs-pts">${pts} pts</span>
       </div>`;
     }).join("");
