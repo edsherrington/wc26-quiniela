@@ -154,6 +154,9 @@
 
   // ─── Knockout stage ─────────────────────────────────────────────────────────
 
+  // Next round lookup — used for "has X to progress" display only (not scoring).
+  const KO_NEXT = { R32: "R16", R16: "QF", QF: "SF", SF: "F", F: "WINNER" };
+
   // Points per correct pick for a given round id.
   function koRoundPoints(roundId) {
     const r = fixtures.knockoutRounds.find((x) => x.id === roundId);
@@ -202,10 +205,31 @@
       ? `<img class="logo" src="${esc(entrant.logo)}" alt="" data-name="${esc(entrant.teamName || entrant.name)}" />`
       : `<div class="logo"></div>`;
 
+    // "Has X to progress" hint — looks up entrant's next-round picks.
+    let progressLine = "";
+    if (homeCode && awayCode) {
+      const nextRound = KO_NEXT[kofx.round];
+      if (nextRound) {
+        const nxtPicks = nextRound === "WINNER"
+          ? new Set(entrant.knockout.WINNER ? [entrant.knockout.WINNER] : [])
+          : new Set(entrant.knockout[nextRound] || []);
+        const hasHome = nxtPicks.has(homeCode);
+        const hasAway = nxtPicks.has(awayCode);
+        const verb = nextRound === "WINNER" ? "to win it" : "to progress";
+        if (hasHome && hasAway) progressLine = `Has both ${verb}`;
+        else if (hasHome)       progressLine = `Has ${teamName(homeCode, { short: true })} ${verb}`;
+        else if (hasAway)       progressLine = `Has ${teamName(awayCode, { short: true })} ${verb}`;
+        else                    progressLine = `Has neither ${verb}`;
+      }
+    }
+
     return `
       <div class="pred ko-match-pred">
         ${logo}
-        <div class="player-name">${esc(firstNames(entrant.name))}</div>
+        <div class="ko-pred-who">
+          <div class="player-name">${esc(firstNames(entrant.name))}</div>
+          ${progressLine ? `<em class="ko-progress-hint">${esc(progressLine)}</em>` : ""}
+        </div>
         <div class="ko-match-picks">${teamChip(homeCode)}${teamChip(awayCode)}</div>
         ${ptsHtml}
       </div>`;
