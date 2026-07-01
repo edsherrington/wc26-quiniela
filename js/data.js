@@ -7,6 +7,15 @@
       fetch("data/predictions.json" + bust).then((r) => r.json()),
       fetch("data/results.json" + bust).then((r) => r.json()),
     ]);
+    // Normalise knockout pick codes to uppercase so case inconsistencies in
+    // predictions.json never cause silent mismatches against team codes.
+    for (const e of (predictions.entrants || [])) {
+      const ko = e.knockout || {};
+      for (const [round, val] of Object.entries(ko)) {
+        if (Array.isArray(val)) ko[round] = val.map((c) => c.toUpperCase());
+        else if (typeof val === "string") ko[round] = val.toUpperCase();
+      }
+    }
     return { fixtures, predictions, results };
   }
 

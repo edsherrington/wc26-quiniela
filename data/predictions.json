@@ -6267,44 +6267,44 @@
           "EGY"
         ],
         "R16": [
-          "cze",
-          "ned",
-          "ger",
-          "fra",
-          "usa",
-          "bel",
-          "esp",
-          "cro",
-          "bra",
-          "sen",
-          "mex",
-          "eng",
-          "por",
-          "can",
-          "arg",
-          "egy"
+          "CZE",
+          "NED",
+          "GER",
+          "FRA",
+          "USA",
+          "BEL",
+          "ESP",
+          "CRO",
+          "BRA",
+          "SEN",
+          "MEX",
+          "ENG",
+          "POR",
+          "CAN",
+          "ARG",
+          "EGY"
         ],
         "QF": [
-          "ned",
-          "fra",
-          "bel",
-          "esp",
-          "bra",
-          "eng",
-          "por",
-          "arg"
+          "NED",
+          "FRA",
+          "BEL",
+          "ESP",
+          "BRA",
+          "ENG",
+          "POR",
+          "ARG"
         ],
         "SF": [
-          "fra",
-          "esp",
-          "bra",
-          "arg"
+          "FRA",
+          "ESP",
+          "BRA",
+          "ARG"
         ],
         "F": [
-          "esp",
-          "arg"
+          "ESP",
+          "ARG"
         ],
-        "WINNER": "esp"
+        "WINNER": "ESP"
       }
     },
     {
