@@ -45,11 +45,13 @@ function resolveTeamCode(side, fixtures, scores, pens, depth) {
   if (!score || score[0] == null) return null;
   const h = resolveTeamCode(src.home, fixtures, scores, pens, (depth || 0) + 1);
   const a = resolveTeamCode(src.away, fixtures, scores, pens, (depth || 0) + 1);
-  if (score[0] === score[1] && pens) {
+  if (score[0] === score[1]) {
+    if (!pens) return null;
     const p = pens[src.id];
-    if (p) return p[0] > p[1] ? h : a;
+    if (!p) return null; // draw but pen data not yet available — treat as unsettled
+    return p[0] > p[1] ? h : a;
   }
-  return score[0] >= score[1] ? h : a;
+  return score[0] > score[1] ? h : a;
 }
 
 function normalize(s) {
@@ -242,7 +244,12 @@ async function main() {
     if (!score) continue;
     const h = resolveTeamCode(kofx.home, fixtures, base.knockoutStage, base.knockoutPens);
     const a = resolveTeamCode(kofx.away, fixtures, base.knockoutStage, base.knockoutPens);
-    const winner = penWinners[kofx.id] || (score[0] >= score[1] ? h : a);
+    // If scores are level, only advance the pen winner — never fall back to home team
+    // (that caused a temporary incorrect advancement before pen data arrives from the API).
+    let winner;
+    if (score[0] > score[1]) winner = h;
+    else if (score[0] < score[1]) winner = a;
+    else winner = penWinners[kofx.id] || null;
     const next = roundNext[kofx.round];
     if (next && winner) koSets[next].add(winner);
   }

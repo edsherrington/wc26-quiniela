@@ -101,9 +101,10 @@
     const awayCode = resolveTeamCode(src.away, fixtures, results, (_depth || 0) + 1);
     if (score[0] === score[1]) {
       const pens = (results.knockoutPens || {})[src.id];
-      if (pens) return pens[0] > pens[1] ? homeCode : awayCode;
+      if (!pens) return null; // draw but pen data not yet available — treat as unsettled
+      return pens[0] > pens[1] ? homeCode : awayCode;
     }
-    return score[0] >= score[1] ? homeCode : awayCode;
+    return score[0] > score[1] ? homeCode : awayCode;
   }
 
   // All navigable days: group stage dates followed by knockout rounds.
