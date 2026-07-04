@@ -1171,19 +1171,19 @@
     },
     {
       "id": "KO-R16-04", "round": "R16",
-      "kickoff": "2026-07-05T23:00:00+01:00", "venue": "Mexico City",
+      "kickoff": "2026-07-06T01:00:00+01:00", "venue": "Mexico City",
       "home": { "code": null, "name": "W M79", "sourceMatch": "KO-R32-07" },
       "away": { "code": null, "name": "W M80", "sourceMatch": "KO-R32-08" }
     },
     {
       "id": "KO-R16-05", "round": "R16",
-      "kickoff": "2026-07-06T19:00:00+01:00", "venue": "Dallas",
+      "kickoff": "2026-07-06T20:00:00+01:00", "venue": "Dallas",
       "home": { "code": null, "name": "W M83", "sourceMatch": "KO-R32-12" },
       "away": { "code": null, "name": "W M84", "sourceMatch": "KO-R32-11" }
     },
     {
       "id": "KO-R16-06", "round": "R16",
-      "kickoff": "2026-07-06T23:00:00+01:00", "venue": "Seattle",
+      "kickoff": "2026-07-07T01:00:00+01:00", "venue": "Seattle",
       "home": { "code": null, "name": "W M81", "sourceMatch": "KO-R32-10" },
       "away": { "code": null, "name": "W M82", "sourceMatch": "KO-R32-09" }
     },
@@ -1219,13 +1219,13 @@
     },
     {
       "id": "KO-QF-04", "round": "QF",
-      "kickoff": "2026-07-12T01:00:00+01:00", "venue": "Kansas City",
+      "kickoff": "2026-07-12T02:00:00+01:00", "venue": "Kansas City",
       "home": { "code": null, "name": "W M95", "sourceMatch": "KO-R16-07" },
       "away": { "code": null, "name": "W M96", "sourceMatch": "KO-R16-08" }
     },
     {
       "id": "KO-SF-01", "round": "SF",
-      "kickoff": "2026-07-14T19:00:00+01:00", "venue": "Dallas",
+      "kickoff": "2026-07-14T20:00:00+01:00", "venue": "Dallas",
       "home": { "code": null, "name": "W M97", "sourceMatch": "KO-QF-01" },
       "away": { "code": null, "name": "W M98", "sourceMatch": "KO-QF-02" }
     },
