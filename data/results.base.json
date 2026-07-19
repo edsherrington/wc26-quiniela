@@ -409,6 +409,10 @@
     "KO-SF-02": [
       1,
       2
+    ],
+    "KO-F-01": [
+      1,
+      0
     ]
   },
   "knockoutPens": {
@@ -502,6 +506,6 @@
       "ARG",
       "ESP"
     ],
-    "WINNER": null
+    "WINNER": "ESP"
   }
 }
